@@ -87,3 +87,11 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# custom file
+*.json
+*.idea
+*.DS_Store
+
+# custom dir
+log/

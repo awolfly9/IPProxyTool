@@ -1,2 +1,2 @@
 # IPProxyTool
-spider crawl ip proxy tools
+spider crawl ip proxy tool
