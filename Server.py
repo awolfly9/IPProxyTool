@@ -67,11 +67,14 @@ class Server(BaseHTTPRequestHandler):
                     print('没有处理的参数:%s 值为:%s' % (key, value))
 
             print('condition:%s, count:%s' % (self.condition, self.str_count))
+
             results = sql.select(self.condition, self.str_count)
+            data = [{'ip': item[0], 'port': item[1]} for item in results]
+            data = json.dumps(data, indent = 4)
 
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(json.dumps(results, indent = 4))
+            self.wfile.write(data)
         except Exception, e:
             logging.warning(str(e))
             self.send_response(404)
