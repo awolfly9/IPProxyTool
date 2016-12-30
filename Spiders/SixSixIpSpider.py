@@ -12,7 +12,8 @@ class SixSixIpSpider(Spider):
     def __init__(self, queue):
         super(SixSixIpSpider, self).__init__(queue)
         self.name = 'SixSixIpSpider'
-        self.urls = ['http://m.66ip.cn/%s.html' % n for n in ['index'] + range(1, 10)]
+        'http://www.66ip.cn/4.html'
+        self.urls = ['http://m.66ip.cn/%s.html' % n for n in range(1, 10)]
 
     def parse_page(self, r):
         pattern = re.compile('<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>',

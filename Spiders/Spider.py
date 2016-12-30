@@ -2,6 +2,7 @@
 import logging
 import time
 
+import datetime
 import requests
 
 
@@ -29,7 +30,7 @@ class Spider(object):
         self.queue.put(proxy)
 
     def write(self, data):
-        with open('log/%s - %s.html' % (self.name, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())),
-                  'w') as f:
+        #with open('log/%s - %s.html' % (self.name, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())), 'w') as f:
+        with open('log/%s - %s.html' % (self.name, datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S-%f')), 'w') as f:
             f.write(data)
             f.close()

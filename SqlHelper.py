@@ -17,28 +17,31 @@ class SqlHelper(Singleton):
         self.database = None
         self.cursor = None
 
-        self.ipproxy_table = 'CREATE TABLE %s (ip text NOT NULL, port text NOT NULL,' \
-                             'country text NOT NULL, anonymity text NOT NULL, https text NOT NULL,' \
-                             'speed text NOT NULL)' % self.table_name
-
         self.init()
+        print('Sqlhelper __init__')
 
     def init(self):
         self.create_database()
         self.create_table()
 
     def create_database(self):
-        
-        lock.acquire(True)
-        self.database = sqlite3.connect(self.database_name, check_same_thread = False)
-        self.cursor = self.database.cursor()
-
-        lock.release()
-
-    def create_table(self):
-
         try:
             lock.acquire(True)
+
+            self.database = sqlite3.connect(self.database_name, check_same_thread = False)
+            self.cursor = self.database.cursor()
+
+            lock.release()
+        except Exception, e:
+            lock.release()
+            logging.error('SqlHelper create_database exception:%s' % e)
+            print('SqlHelper create_database exception:%s' % e)
+
+
+    def create_table(self):
+        try:
+            lock.acquire(True)
+
             self.cursor.execute('''CREATE TABLE IF NOT EXISTS %s (
                                                ip TEXT NOT NULL,
                                                port TEXT NOT NULL,
@@ -48,99 +51,159 @@ class SqlHelper(Singleton):
                                                speed TEXT NOT NULL)''' % self.table_name)
 
             self.database.commit()
-            lock.release()
-        except:
-            print('error create table')
-            lock.release()
 
+            lock.release()
+        except Exception, e:
+            lock.release()
+            logging.error('sql helper create_table exception:%s' % str(e))
+            print('sql helper create_table exception:%s' % str(e))
 
     def insert_data(self, proxy):
-        
-        lock.acquire(True)
+        try:
+            lock.acquire(True)
 
-        data = [proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed]
+            data = [proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed]
 
-        print('insert data:%s' % str(data))
+            logging.info('insert data:%s' % str(data))
+            print('insert data:%s' % str(data))
 
-        self.cursor.execute("INSERT INTO %s VALUES (?,?,?,?,?,?)" % self.table_name, data)
-        self.database.commit()
+            self.cursor.execute("INSERT INTO %s VALUES (?,?,?,?,?,?)" % self.table_name, data)
+            self.database.commit()
 
-        lock.release()
+            lock.release()
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper insert_data exception:%s' % str(e))
+            print('sql helper insert_data exception:%s' % str(e))
+
 
     def batch_insert_data(self, proxys):
-        
-        lock.acquire(True)
-        for proxy in proxys:
-            self.insert_data(proxy)
+        try:
+            lock.acquire(True)
 
-        lock.release()
+            for proxy in proxys:
+                data = [proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed]
+                self.cursor.execute("INSERT INTO %s VALUES (?,?,?,?,?,?)" % self.table_name, data)
+
+            self.database.commit()
+
+            lock.release()
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper batch_insert_data exception:%s' % str(e))
+            print('sql helper batch_insert_data exception:%s' % str(e))
 
     def drop_table(self):
+        try:
+            lock.acquire(True)
 
-        lock.acquire(True)
-        self.cursor.execute('DROP TABLE %s' % self.table_name)
-        self.database.commit()
-        lock.release()
+            self.cursor.execute('DROP TABLE %s' % self.table_name)
+            self.database.commit()
+
+            lock.release()
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper drop_table exception:%s' % str(e))
+            print('sql helper drop_table exception:%s' % str(e))
 
     def select_all(self):
+        try:
+            lock.acquire(True)
 
-        lock.acquire(True)
-        self.cursor.execute('SELECT * FROM %s' % self.table_name)
-        result = self.cursor.fetchall()
-        lock.release()
-        return result
+            self.cursor.execute('SELECT * FROM %s' % self.table_name)
+            result = self.cursor.fetchall()
+
+            lock.release()
+            return result
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper select_all exception:%s' % str(e))
+            print('sql helper select_all exception:%s' % str(e))
+            return []
 
     def select_once(self):
-        
-        lock.acquire(True)
-        self.cursor.execute('SELECT * FROM %s limit 1' % self.table_name)
-        result = self.cursor.fetchall()
-        lock.release()
-        return result
+        try:
+            lock.acquire(True)
+
+            self.cursor.execute('SELECT * FROM %s limit 1' % self.table_name)
+            result = self.cursor.fetchall()
+
+            lock.release()
+            return result
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper select_once exception:%s' % str(e))
+            print('sql helper select_once exception:%s' % str(e))
+            return []
 
     def select_count(self, count):
-        lock.acquire(True)
-        self.cursor.execute('SELECT * FROM %s ORDER BY speed limit %s' % (self.table_name, count))
-        result = self.cursor.fetchall()
-        lock.release()
-        return result
+        try:
+            lock.acquire(True)
+
+            self.cursor.execute('SELECT * FROM %s ORDER BY speed limit %s' % (self.table_name, count))
+            result = self.cursor.fetchall()
+            lock.release()
+
+            return result
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper select_count exception:%s' % str(e))
+            print('sql helper select_count exception:%s' % str(e))
+            return []
 
     def select(self, condition, count):
-        lock.acquire(True)
-        if condition == '':
-            command = 'SELECT DISTINCT * FROM %s ORDER BY speed ASC %s ' % (
-                self.table_name, count)
-        elif count == '':
-            command = 'SELECT DISTINCT * FROM %s WHERE %s ORDER BY speed' % (
-                self.table_name, condition)
-        else:
-            command = 'SELECT DISTINCT * FROM %s WHERE %s ORDER BY speed ASC %s ' % (
-                self.table_name, condition, count)
+        try:
+            lock.acquire(True)
 
-        logging.info('sqlhelper select commond:%s' % command)
-        print('sqlhelper select commond:%s' % command)
+            if condition == '':
+                command = 'SELECT DISTINCT * FROM %s ORDER BY speed ASC %s ' % (
+                    self.table_name, count)
+            elif count == '':
+                command = 'SELECT DISTINCT * FROM %s WHERE %s ORDER BY speed' % (
+                    self.table_name, condition)
+            else:
+                command = 'SELECT DISTINCT * FROM %s WHERE %s ORDER BY speed ASC %s ' % (
+                    self.table_name, condition, count)
 
-        self.cursor.execute(command)
-        result = self.cursor.fetchall()
+            logging.info('sqlhelper select commond:%s' % command)
+            print('sqlhelper select commond:%s' % command)
 
-        lock.release()
-        return result
+            self.cursor.execute(command)
+            result = self.cursor.fetchall()
+
+            lock.release()
+            return result
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper select exception:%s' % str(e))
+            print('sql helper select exception:%s' % str(e))
+            return []
 
     def clear_all(self):
-        
-        lock.acquire(True)
-        self.cursor.execute('DELETE FROM %s' % self.table_name)
-        self.database.commit()
+        try:
+            lock.acquire(True)
 
-        lock.release()
+            self.cursor.execute('DELETE FROM %s' % self.table_name)
+            self.database.commit()
+
+            lock.release()
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper clear_all exception:%s' % str(e))
+            print('sql helper clear_all exception:%s' % str(e))
 
     def close(self):
-        
+        try:
             lock.acquire(True)
+
             self.cursor.close()
             self.database.close()
         
             lock.release()
+        except Exception, e:
+            lock.release()
+            logging.warning('sql helper close exception:%s' % str(e))
+            print('sql helper close exception:%s' % str(e))
 
 if __name__ == '__main__':
     sql = SqlHelper()
@@ -204,6 +267,19 @@ if __name__ == '__main__':
         print('result:%s' % str(res))
         print(res[0])
         print(res[1])
+
+    print('-------------------------------------********')
+
+    try:
+        lock.acquire(True)
+        print('test try')
+        #print(10/0)
+        lock.release()
+    except Exception, e:
+        print(e)
+    finally:
+        print('finally')
+        lock.release()
 
         # conn = sqlite3.connect('example.db')
         # c = conn.cursor()

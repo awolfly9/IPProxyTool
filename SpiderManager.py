@@ -8,6 +8,7 @@ from Spiders.UsProxySpider import UsProxySpider
 from Spiders.FreeProxyListsSpider import FreeProxyListsSpider
 from Spiders.GatherproxySpider import GatherproxySpider
 from Spiders.SixSixIpSpider import SixSixIpSpider
+from Spiders.KuaiDaiLiSpider import KuaiDaiLiSpider
 from SqlHelper import SqlHelper
 from config import WAIT_TIME
 
@@ -17,6 +18,7 @@ class SpiderManager(object):
         self.spiders = []
         self.queue = queue
         self.sql = SqlHelper()
+        print('SpiderManager sql:%s' % self.sql)
         self.register_spider()
 
     def init(self):
@@ -39,15 +41,17 @@ class SpiderManager(object):
         self.sql.clear_all()
 
     def register_spider(self):
-        self.spiders.append(UsProxySpider(self.queue))
-        self.spiders.append(FreeProxyListsSpider(self.queue))
-        self.spiders.append(GatherproxySpider(self.queue))
+        # self.spiders.append(UsProxySpider(self.queue))
+        # self.spiders.append(FreeProxyListsSpider(self.queue))
+        # self.spiders.append(GatherproxySpider(self.queue))
         self.spiders.append(SixSixIpSpider(self.queue))
+        self.spiders.append(KuaiDaiLiSpider(self.queue))
 
     def run(self):
         while (True):
             self.init()
             for spider in self.spiders:
+                print('%s get proxy ip start' % spider.name)
                 spider.run()
 
             logging.info('Spider waiting...')

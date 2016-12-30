@@ -6,15 +6,16 @@ import logging
 import threading
 import sys
 
+import time
+
 from Server import Server
 from Validator import Validator
 from SpiderManager import SpiderManager
 from SqlHelper import SqlHelper
+from KillPort import kill_ports
 
 
 class IPProxyTool(object):
-
-
     def __init__(self):
         logging.basicConfig(
                 filename = 'log/spider.log',
@@ -24,7 +25,6 @@ class IPProxyTool(object):
         )
 
         self.queue = Queue.Queue()
-
 
     def run_spider(self):
         spider = SpiderManager(self.queue)
@@ -42,6 +42,11 @@ if __name__ == '__main__':
     #解决编码问题
     reload(sys)
     sys.setdefaultencoding('utf-8')
+
+    ports = ['8000']
+    kill_ports(ports)
+
+    time.sleep(1)
 
     tool = IPProxyTool()
 

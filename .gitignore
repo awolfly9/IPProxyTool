@@ -92,6 +92,7 @@ ENV/
 *.json
 *.idea
 *.DS_Store
+*.pyc
 
 # custom dir
 log/
