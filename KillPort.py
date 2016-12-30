@@ -11,7 +11,7 @@ def kill_ports(ports):
         (data, err) = popen.communicate()
         print('data:\n%s  \nerr:\n%s' % (data, err))
 
-        pattern = re.compile(r'\b\d{4}\b', re.S)
+        pattern = re.compile(r'\b\d+\b', re.S)
         pids = re.findall(pattern, data)
 
         print('pids:%s' % str(pids))
