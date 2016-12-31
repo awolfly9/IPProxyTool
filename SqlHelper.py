@@ -6,6 +6,7 @@ import threading
 
 from Proxy import Proxy
 from Singleton import Singleton
+from utils import log
 lock = threading.Lock()
 
 
@@ -18,7 +19,7 @@ class SqlHelper(Singleton):
         self.cursor = None
 
         self.init()
-        print('Sqlhelper __init__')
+        log('Sqlhelper __init__')
 
     def init(self):
         self.create_database()
@@ -34,8 +35,7 @@ class SqlHelper(Singleton):
             lock.release()
         except Exception, e:
             lock.release()
-            logging.error('SqlHelper create_database exception:%s' % e)
-            print('SqlHelper create_database exception:%s' % e)
+            log('SqlHelper create_database exception:%s' % e)
 
 
     def create_table(self):
@@ -56,7 +56,7 @@ class SqlHelper(Singleton):
         except Exception, e:
             lock.release()
             logging.error('sql helper create_table exception:%s' % str(e))
-            print('sql helper create_table exception:%s' % str(e))
+            log('sql helper create_table exception:%s' % str(e), logging.WARNING)
 
     def insert_data(self, proxy):
         try:
@@ -64,8 +64,7 @@ class SqlHelper(Singleton):
 
             data = [proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed]
 
-            logging.info('insert data:%s' % str(data))
-            print('insert data:%s' % str(data))
+            log('insert data:%s' % str(data))
 
             self.cursor.execute("INSERT INTO %s VALUES (?,?,?,?,?,?)" % self.table_name, data)
             self.database.commit()
@@ -73,8 +72,7 @@ class SqlHelper(Singleton):
             lock.release()
         except Exception, e:
             lock.release()
-            logging.warning('sql helper insert_data exception:%s' % str(e))
-            print('sql helper insert_data exception:%s' % str(e))
+            log('sql helper insert_data exception:%s' % str(e), logging.WARNING)
 
 
     def batch_insert_data(self, proxys):
@@ -90,8 +88,7 @@ class SqlHelper(Singleton):
             lock.release()
         except Exception, e:
             lock.release()
-            logging.warning('sql helper batch_insert_data exception:%s' % str(e))
-            print('sql helper batch_insert_data exception:%s' % str(e))
+            log('sql helper batch_insert_data exception:%s' % str(e), logging.WARNING)
 
     def drop_table(self):
         try:
@@ -103,8 +100,7 @@ class SqlHelper(Singleton):
             lock.release()
         except Exception, e:
             lock.release()
-            logging.warning('sql helper drop_table exception:%s' % str(e))
-            print('sql helper drop_table exception:%s' % str(e))
+            log('sql helper drop_table exception:%s' % str(e), logging.WARNING)
 
     def select_all(self):
         try:
@@ -118,7 +114,7 @@ class SqlHelper(Singleton):
         except Exception, e:
             lock.release()
             logging.warning('sql helper select_all exception:%s' % str(e))
-            print('sql helper select_all exception:%s' % str(e))
+            log('sql helper select_all exception:%s' % str(e), logging.WARNING)
             return []
 
     def select_once(self):
@@ -132,8 +128,7 @@ class SqlHelper(Singleton):
             return result
         except Exception, e:
             lock.release()
-            logging.warning('sql helper select_once exception:%s' % str(e))
-            print('sql helper select_once exception:%s' % str(e))
+            log('sql helper select_once exception:%s' % str(e), logging.WARNING)
             return []
 
     def select_count(self, count):
@@ -147,8 +142,7 @@ class SqlHelper(Singleton):
             return result
         except Exception, e:
             lock.release()
-            logging.warning('sql helper select_count exception:%s' % str(e))
-            print('sql helper select_count exception:%s' % str(e))
+            log('sql helper select_count exception:%s' % str(e), logging.WARNING)
             return []
 
     def select(self, condition, count):
@@ -165,8 +159,7 @@ class SqlHelper(Singleton):
                 command = 'SELECT DISTINCT * FROM %s WHERE %s ORDER BY speed ASC %s ' % (
                     self.table_name, condition, count)
 
-            logging.info('sqlhelper select commond:%s' % command)
-            print('sqlhelper select commond:%s' % command)
+            log('sqlhelper select commond:%s' % command)
 
             self.cursor.execute(command)
             result = self.cursor.fetchall()
@@ -175,8 +168,7 @@ class SqlHelper(Singleton):
             return result
         except Exception, e:
             lock.release()
-            logging.warning('sql helper select exception:%s' % str(e))
-            print('sql helper select exception:%s' % str(e))
+            log('sql helper select exception:%s' % str(e), logging.WARNING)
             return []
 
     def clear_all(self):
@@ -189,8 +181,7 @@ class SqlHelper(Singleton):
             lock.release()
         except Exception, e:
             lock.release()
-            logging.warning('sql helper clear_all exception:%s' % str(e))
-            print('sql helper clear_all exception:%s' % str(e))
+            log('sql helper clear_all exception:%s' % str(e), logging.WARNING)
 
     def close(self):
         try:
@@ -202,83 +193,82 @@ class SqlHelper(Singleton):
             lock.release()
         except Exception, e:
             lock.release()
-            logging.warning('sql helper close exception:%s' % str(e))
-            print('sql helper close exception:%s' % str(e))
+            log('sql helper close exception:%s' % str(e), logging.WARNING)
 
 if __name__ == '__main__':
     sql = SqlHelper()
     all_rows = sql.select_all()
     for row in all_rows:
-        print('proxy:%s' % str(row))
+        log('proxy:%s' % str(row))
         # row[0] returns the first column in the query (name), row[1] returns email column.
-        print('http://{0} : {1}'.format(row[0], row[1], ))
+        log('http://{0} : {1}'.format(row[0], row[1], ))
 
     #sql.clear_all()
 
-    print('-------------------------------------')
+    log('-------------------------------------')
 
     results = sql.cursor.execute('SELECT * FROM ipproxy WHERE country="中国" ORDER BY speed')
     for res in results:
-        print('result:%s' % str(res))
-        print(res[3])
-        print(res[4])
+        log('result:%s' % str(res))
+        log(res[3])
+        log(res[4])
 
-    print('-------------------------------------')
+    log('-------------------------------------')
 
     results = sql.cursor.execute('SELECT * FROM ipproxy WHERE port="8080" ORDER BY speed limit 4')
     for res in results:
-        print('result:%s' % str(res))
-        print(res[3])
-        print(res[4])
+        log('result:%s' % str(res))
+        log(res[3])
+        log(res[4])
 
-    print('-------------------------------------')
+    log('-------------------------------------')
 
     results = sql.select_count(10)
     for res in results:
-        print('result:%s' % str(res))
-        print(res[3])
-        print(res[4])
+        log('result:%s' % str(res))
+        log(res[3])
+        log(res[4])
 
-    print('-------------------------------------')
+    log('-------------------------------------')
 
     results = sql.cursor.execute('SELECT DISTINCT ip,port FROM %s WHERE %s ORDER BY speed ASC %s' % (
         sql.table_name, 'port=8080 And https="no"', 'limit 5'))
     for res in results:
-        print('result:%s' % str(res))
-        print(res[0])
-        print(res[1])
+        log('result:%s' % str(res))
+        log(res[0])
+        log(res[1])
 
     database = 'country="中国" And anonymity="1"'
     count = 'limit 10'
 
-    print('-------------------------------------')
-    print(database)
+    log('-------------------------------------')
+    log(database)
 
     results = sql.select(database, count)
     for res in results:
-        print('result:%s' % str(res))
-        print(res[0])
-        print(res[1])
+        log('result:%s' % str(res))
+        log(res[0])
+        log(res[1])
 
-    print('-------------------------------------********')
+    log('-------------------------------------********')
 
     results = sql.select('', '')
     for res in results:
-        print('result:%s' % str(res))
-        print(res[0])
-        print(res[1])
+        log('result:%s' % str(res))
+        log(res[0])
+        log(res[1])
 
-    print('-------------------------------------********')
+    log('-------------------------------------********')
 
     try:
         lock.acquire(True)
-        print('test try')
-        #print(10/0)
+        log('test try')
+        #log(10/0)
         lock.release()
     except Exception, e:
-        print(e)
+        log(e)
     finally:
-        print('finally')
+        log('finally')
         lock.release()
 
         # conn = sqlite3.connect('example.db')

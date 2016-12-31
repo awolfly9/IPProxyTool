@@ -1,10 +1,12 @@
 # coding=utf-8
+
 import logging
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 import json
 import urllib
 import urlparse
 from SqlHelper import SqlHelper
+from utils import log
 
 
 class Server(BaseHTTPRequestHandler):
@@ -20,8 +22,8 @@ class Server(BaseHTTPRequestHandler):
     def do_GET(self):
         sql = SqlHelper()
         dict = {}
-        self.str_count = ''
-        self.condition = ''
+        str_count = ''
+        condition = ''
 
         try:
             if self.path == '/favicon.ico':
@@ -42,33 +44,32 @@ class Server(BaseHTTPRequestHandler):
                 if query != '':
                     dict[query.split('=')[0]] = query.split('=')[1]
 
-            print('dict:%s' % str(dict))
+            log('dict:%s' % str(dict))
 
             i = 0
             for key, value in dict.items():
-                print('key:%s, value:%s' % (key, value))
+                log('key:%s, value:%s' % (key, value))
                 if key == 'type':
                     cond = 'anonymity="' + value + '"'
                     if i > 0:
-                        self.condition = self.condition + ' And '
-                    self.condition = self.condition + cond
+                        condition = condition + ' And '
+                    condition = condition + cond
                     i = i + 1
                 elif key == 'country':
                     cond = 'country="' + value.decode('utf-8') + '"'
                     if i > 0:
-                        self.condition = self.condition + ' And '
+                        condition = condition + ' And '
 
-                    self.condition = self.condition + cond
+                    condition = condition + cond
                     i = i + 1
                 elif key == 'count':
-                    self.str_count = 'limit ' + value
+                    str_count = 'limit ' + value
                 else:
-                    logging.warning('没有处理的参数:%s 值为:%s' % (key, value))
-                    print('没有处理的参数:%s 值为:%s' % (key, value))
+                    log('没有处理的参数:%s 值为:%s' % (key, value), logging.WARNING)
 
-            print('condition:%s, count:%s' % (self.condition, self.str_count))
+            log('condition:%s, count:%s' % (condition, str_count))
 
-            results = sql.select(self.condition, self.str_count)
+            results = sql.select(condition, str_count)
             data = [{'ip': item[0], 'port': item[1]} for item in results]
             data = json.dumps(data, indent = 4)
 
@@ -76,12 +77,13 @@ class Server(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(data)
         except Exception, e:
-            logging.warning(str(e))
+            log('server do get exception:%s' % str(e), logging.WARNING)
             self.send_response(404)
 
     # def runServer():
     # 	server = BaseHTTPServer.HTTPServer(('0.0.0.0', '8000'), Server)
     # 	server.serve_forever()
+
 
 if __name__ == '__main__':
     server = HTTPServer(('0.0.0.0', 8000), Server)

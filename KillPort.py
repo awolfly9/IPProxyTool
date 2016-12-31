@@ -3,30 +3,31 @@
 import os
 import subprocess
 import re
+from utils import log
 
 def kill_ports(ports):
     for port in ports:
-        print('kill %s start' % port)
+        log('kill %s start' % port)
         popen = subprocess.Popen('lsof -i:%s' % port, shell = True, stdout=subprocess.PIPE)
         (data, err) = popen.communicate()
-        print('data:\n%s  \nerr:\n%s' % (data, err))
+        log('data:\n%s  \nerr:\n%s' % (data, err))
 
         pattern = re.compile(r'\b\d+\b', re.S)
         pids = re.findall(pattern, data)
 
-        print('pids:%s' % str(pids))
+        log('pids:%s' % str(pids))
 
         for pid in pids:
             if pid != '' and pid != None:
                 try:
-                    print('pid:%s' % pid)
+                    log('pid:%s' % pid)
                     popen = subprocess.Popen('kill -9 %s' % pid, shell = True, stdout = subprocess.PIPE)
                     (data, err) = popen.communicate()
-                    print('data:\n%s  \nerr:\n%s' % (data, err))
+                    log('data:\n%s  \nerr:\n%s' % (data, err))
                 except Exception, e:
-                    print('kill_ports exception:%s' % e)
+                    log('kill_ports exception:%s' % e)
 
-        print('kill %s finish' % port)
+        log('kill %s finish' % port)
 
 
 if __name__ == '__main__':

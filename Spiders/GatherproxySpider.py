@@ -38,6 +38,4 @@ class GatherproxySpider(Spider):
                     speed = 1
             )
 
-            logging.info('proxy:%s' % proxy)
-
             self.add_proxy(proxy = proxy)

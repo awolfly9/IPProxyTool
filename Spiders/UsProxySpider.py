@@ -32,7 +32,6 @@ class UsProxySpider(Spider):
         #proxies = {}
         if items is not None:
             for item in items:
-                #print('ip:%s port:%s' %(item[0], item[1]))
                 proxy = Proxy()
                 proxy.set_value(
                         ip = item[0],

@@ -1,11 +1,13 @@
 # coding=utf-8
-import logging
+
+
 import re
 import requests
 import sys
 import chardet
 from Proxy import Proxy
 from Spider import Spider
+from utils import log
 
 
 class SixSixIpSpider(Spider):
@@ -30,7 +32,5 @@ class SixSixIpSpider(Spider):
                         https = 'no',
                         speed = 1
                 )
-
-                logging.info('proxy:%s' % proxy)
 
                 self.add_proxy(proxy = proxy)

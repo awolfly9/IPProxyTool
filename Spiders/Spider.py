@@ -1,9 +1,10 @@
 # coding=utf-8
+
 import logging
 import time
-
 import datetime
 import requests
+from utils import log
 
 
 class Spider(object):
@@ -12,16 +13,16 @@ class Spider(object):
         self.name = 'Spider'
         self.urls = []
         self.headers = {}
+        self.timeout = 10
 
     def run(self):
         for i, url in enumerate(self.urls):
             try:
-                r = requests.get(url, headers = self.headers)
+                r = requests.get(url, headers = self.headers, timeout = self.timeout)
                 self.write(r.text.encode('utf-8'))
                 self.parse_page(r)
             except Exception, e:
-                logging.warning('FreeProxyListsSpider Exception:%s' % str(e))
-                print('FreeProxyListsSpider Exception:%s' % str(e))
+                log('spider run %s Exception:%s' % (self.name, str(e)), logging.WARNING)
 
     def parse_page(self, r):
         pass

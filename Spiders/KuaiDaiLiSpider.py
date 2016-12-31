@@ -28,8 +28,6 @@ class KuaiDaiLiSpider(Spider):
 
             self.add_proxy(proxy)
 
-            #print('kuaidaili parse_page proxy:%s' % str(proxy))
-
 
 
 

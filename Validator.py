@@ -11,14 +11,13 @@ import requests
 from config import *
 from SqlHelper import SqlHelper
 from Proxy import Proxy
+from utils import log
 
 
 class Validator(object):
     def __init__(self, queue):
         self.queue = queue
         self.sql = SqlHelper()
-        print('Validator sql:%s' % self.sql)
-        self.count = 0
 
         self.headers = {
             'Accept': 'application/json',
@@ -38,31 +37,13 @@ class Validator(object):
         self.init()
 
     def init(self):
-        # #读取之前的所有数据，存储到需要验证的队列
-        # all_proxy = self.sql.select_all()
-        # for row in all_proxy:
-        #     proxy = Proxy()
-        #     proxy.set_value(
-        #             ip = row[0],
-        #             port = row[1],
-        #             country = row[2],
-        #             anonymity = row[3],
-        #             https = row[4],
-        #             speed = row[5],
-        #     )
-        #
-        #     self.queue.put(proxy)
-        #
-        # #清空之前所有的缓存代理
-        # self.sql.clear_all()
-
         pass
 
     def run(self):
         while True:
             #阻塞，直到取到数据
             proxy = self.queue.get()
-            logging.info('validator:' + str(proxy))
+            log('validator run:%s' % str(proxy))
             
             if proxy.https == 'yes':
                 continue
@@ -89,10 +70,10 @@ class Validator(object):
             #     self.write('log/ip_chinaz_%s.html' % time.strftime('%y-%m-%d %H:%M:%S', time.localtime()), r.text)
             #
             #     if proxy.ip not in r.text:
-            #         print('ip error:%s' % str(proxies))
+            #         log('ip error:%s' % str(proxies))
             #         continue
             # except Exception, e:
-            #     print('net ip chinaz error msg:%s' % e)
+            #     log('net ip chinaz error msg:%s' % e)
             #     continue
 
             # try:
@@ -100,10 +81,10 @@ class Validator(object):
             #     self.write('log/ip_chinaz_%s.html' % time.strftime('%y-%m-%d %H:%M%S', time.localtime()), r.text)
             #
             #     if proxy.ip not in r.text:
-            #         print('ip error:%s' % str(proxies))
+            #         log('ip error:%s' % str(proxies))
             #         continue
             # except Exception, e:
-            #     print('net ip chinaz error msg:%s' % e)
+            #     log('net ip chinaz error msg:%s' % e)
             #     continue
 
             try:
@@ -111,10 +92,10 @@ class Validator(object):
                 self.write('log/baidu_%s.html' % time.strftime('%Y-%m-%d %H:%M%S:%F', time.localtime()), r.text)
 
                 if 'www.baidu.com' not in r.text:
-                    print('ip error:%s' % str(proxies))
+                    log('ip error:%s' % str(proxies), logging.WARNING)
                     continue
             except Exception, e:
-                print('net ip baidu error msg:%s' % e)
+                log('net ip baidu error msg:%s' % e, logging.ERROR)
                 continue
 
             try:
@@ -122,10 +103,10 @@ class Validator(object):
                 self.write('log/douban - %s.html' % time.strftime('%Y-%m-%d %H:%M%S:%F', time.localtime()), r.text)
 
                 if 'https://www.douban.com' not in r.text:
-                    print('ip error:%s' % str(proxies))
+                    log('ip error:%s' % str(proxies), logging.WARNING)
                     continue
             except Exception, e:
-                print('net ip steam error msg:%s' % e)
+                log('net ip steam error msg:%s' % e, logging.ERROR)
                 continue
 
             # try:
@@ -133,10 +114,10 @@ class Validator(object):
             #     self.write('log/steam - %s.html' % time.strftime('%Y-%m-%d %H:%M%S:%F', time.localtime()), r.text)
             #
             #     if 'http://store.steampowered.com' not in r.text:
-            #         print('ip error:%s' % str(proxies))
+            #         log('ip error:%s' % str(proxies))
             #         continue
             # except Exception, e:
-            #     print('net ip steam error msg:%s' % e)
+            #     log('net ip steam error msg:%s' % e)
             #     continue
 
             # try:
@@ -146,15 +127,15 @@ class Validator(object):
             #
             #     if r.ok and r.text.find(VALIDATOR_TEXT):
             #         speed = time.time() - start
-            #         print('success validator:' + str(proxy))
+            #         log('success validator:' + str(proxy))
             #
             #         if speed < 4:
             #             ret = True
             #             proxy.speed = str(speed)
             #     else:
-            #         print('code error validator:' + str(proxy))
+            #         log('code error validator:' + str(proxy))
             # except Exception, e:
-            #     print('net except error validator:%s  error msg:%s' % (str(proxy), e))
+            #     log('net except error validator:%s  error msg:%s' % (str(proxy), e))
             #     continue
 
             if ret:
