@@ -13,6 +13,9 @@ from Validator import Validator
 from SpiderManager import SpiderManager
 from SqlHelper import SqlHelper
 from KillPort import kill_ports
+from scrapy import cmdline
+import subprocess
+from QueueMng import queue_mng
 
 
 class IPProxyTool(object):
@@ -24,7 +27,7 @@ class IPProxyTool(object):
                 level = logging.DEBUG,
         )
 
-        self.queue = Queue.Queue()
+        self.queue = queue_mng.queue
 
     def run_spider(self):
         spider = SpiderManager(self.queue)
@@ -56,5 +59,9 @@ if __name__ == '__main__':
     server = threading.Thread(target = tool.run_server)
 
     spider.start()
-    validator.start()
-    server.start()
+    #validator.start()
+    # server.start()
+
+    cmdline.execute('scrapy crawl test'.split())
+
+

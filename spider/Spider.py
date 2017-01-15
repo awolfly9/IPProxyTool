@@ -4,7 +4,9 @@ import logging
 import time
 import datetime
 import requests
-from utils import log
+from utils import *
+from config import *
+from SqlHelper import SqlHelper
 
 
 class Spider(object):
@@ -14,6 +16,7 @@ class Spider(object):
         self.urls = []
         self.headers = {}
         self.timeout = 10
+        self.sql = SqlHelper()
 
     def run(self):
         for i, url in enumerate(self.urls):
@@ -28,10 +31,14 @@ class Spider(object):
         pass
 
     def add_proxy(self, proxy):
-        self.queue.put(proxy)
+        #self.queue.put(proxy)
+
+        command = get_insert_data_command(free_ipproxy_table)
+        msg = (None, proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed, None)
+
+        self.sql.insert_data(command, msg)
 
     def write(self, data):
-        #with open('log/%s - %s.html' % (self.name, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())), 'w') as f:
-        with open('log/%s - %s.html' % (self.name, datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S-%f')), 'w') as f:
+        with open('log/%s - %s.html' % (self.name, datetime.datetime.now().strftime('%Y-%m-%d %H:%m:%s:%f')), 'w') as f:
             f.write(data)
             f.close()

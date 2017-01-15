@@ -9,7 +9,7 @@ class KuaiDaiLiSpider(Spider):
         super(KuaiDaiLiSpider, self).__init__(queue)
 
         self.name = 'kuaidaili'
-        self.urls = ['http://www.kuaidaili.com/free/inha/%s/' % i for i in range(1, 50)]
+        self.urls = ['http://www.kuaidaili.com/free/inha/%s/' % i for i in range(1, 5)]
 
     def parse_page(self, r):
         pattern = re.compile('<tr>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?</tr>', re.S)
@@ -26,6 +26,7 @@ class KuaiDaiLiSpider(Spider):
                 speed = '-1',
             )
 
+            print('proxy:%s' % str(proxy))
             self.add_proxy(proxy)
 
 

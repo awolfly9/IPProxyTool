@@ -6,7 +6,8 @@ import json
 import urllib
 import urlparse
 from SqlHelper import SqlHelper
-from utils import log
+from utils import *
+from config import *
 
 
 class Server(BaseHTTPRequestHandler):
@@ -69,9 +70,15 @@ class Server(BaseHTTPRequestHandler):
 
             log('condition:%s, count:%s' % (condition, str_count))
 
-            results = sql.select(condition, str_count)
-            data = [{'ip': item[0], 'port': item[1]} for item in results]
-            data = json.dumps(data, indent = 4)
+            command = "select * from {}".format(free_ipproxy_table)
+
+            data = sql.query(command)
+            data = str(data)
+
+            #
+            # results = sql.select(condition, str_count)
+            # data = [{'ip': item[0], 'port': item[1]} for item in results]
+            # data = json.dumps(data, indent = 4)
 
             self.send_response(200)
             self.end_headers()
@@ -80,9 +87,9 @@ class Server(BaseHTTPRequestHandler):
             log('server do get exception:%s' % str(e), logging.WARNING)
             self.send_response(404)
 
-    # def runServer():
-    # 	server = BaseHTTPServer.HTTPServer(('0.0.0.0', '8000'), Server)
-    # 	server.serve_forever()
+            # def runServer():
+            # 	server = BaseHTTPServer.HTTPServer(('0.0.0.0', '8000'), Server)
+            # 	server.serve_forever()
 
 
 if __name__ == '__main__':
