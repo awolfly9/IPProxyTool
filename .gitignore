@@ -93,6 +93,9 @@ ENV/
 *.idea
 *.DS_Store
 *.pyc
+test*
+headers.py
 
 # custom dir
 log/
+

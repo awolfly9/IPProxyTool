@@ -2,22 +2,28 @@
 
 import json
 import logging
+import random
 import re
 import requests
 from bs4 import BeautifulSoup as bs4
 from lxml import html
 
-from Proxy import Proxy
-from Spider import Spider
+from proxy import Proxy
+from spider import Spider
+
 
 class GatherproxySpider(Spider):
     def __init__(self, queue):
         super(GatherproxySpider, self).__init__(queue)
-        self.name = 'GatherproxySpider'
+        self.name = 'gather'
         self.urls = [
             'http://gatherproxy.com/',
             'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
         ]
+
+        self.dir_log = 'log/spider/gather'
+        self.proxies = self.get_proxy()
+        self.init()
 
     def parse_page(self, r):
         pattern = re.compile('gp.insertPrx\((.*?)\)', re.S)
@@ -39,3 +45,24 @@ class GatherproxySpider(Spider):
             )
 
             self.add_proxy(proxy = proxy)
+
+    def get_proxy(self):
+        url = 'http://127.0.0.1:8000/?name={0}'.format(self.name)
+        r = requests.get(url = url)
+        if r.text != None and r.text != '':
+            try:
+                data = json.loads(r.text)
+                if len(data) > 0:
+                    proxy = random.choice(data)
+                    ip = proxy.get('ip')
+                    port = proxy.get('port')
+                    address = '%s:%s' % (ip, port)
+
+                    proxies = {
+                        'http': 'http://%s' % address
+                    }
+                    return proxies
+            except:
+                return None
+
+        return None

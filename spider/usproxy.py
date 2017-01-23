@@ -8,19 +8,22 @@ import time
 import Queue
 from bs4 import BeautifulSoup
 
-from Proxy import Proxy
-from Spider import Spider
+from proxy import Proxy
+from spider import Spider
 
 class UsProxySpider(Spider):
     def __init__(self, queue):
         super(UsProxySpider, self).__init__(queue)
-        self.name = 'UsProxySpider'
+        self.name = 'usproxy'
         self. urls = [
             'http://www.sslproxies.org/',
             'http://www.us-proxy.org/',
             'http://free-proxy-list.net/uk-proxy.html',
             'http://www.socks-proxy.net/',
         ]
+
+        self.dir_log = 'log/spider/usproxy'
+        self.init()
 
     def parse_page(self, r):
         pattern = re.compile(

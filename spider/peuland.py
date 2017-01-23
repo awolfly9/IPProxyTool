@@ -5,17 +5,20 @@ import logging
 
 import requests
 import base64
-from Proxy import Proxy
+from proxy import Proxy
 from utils import log
-from Spider import Spider
+from spider import Spider
 
 
 class PeulandSpider(Spider):
     def __init__(self, queue):
         super(PeulandSpider, self).__init__(queue)
-        self.name = 'PeulandSpider'
+        self.name = 'peuland'
         self.urls = ['https://proxy.peuland.com/proxy_list_by_category.htm']
         self.timeout = 20
+
+        self.dir_log = 'log/spider/peuland'
+        self.init()
 
     def run(self):
         for i, url in enumerate(self.urls):

@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 
 import logging
+import os
 import re
 import subprocess
 import traceback
@@ -59,6 +60,7 @@ def get_create_table_command(table_name):
         "`anonymity` INT(2) DEFAULT NULL,"
         "`https` CHAR(4) DEFAULT NULL ,"
         "`speed` FLOAT DEFAULT NULL,"
+        "`source` CHAR(20) DEFAULT NULL,"
         "`save_time` TIMESTAMP NOT NULL,"
         "PRIMARY KEY(id)"
         ") ENGINE=InnoDB".format(table_name))
@@ -68,7 +70,52 @@ def get_create_table_command(table_name):
 
 def get_insert_data_command(table_name):
     command = ("INSERT IGNORE INTO {} "
-               "(id, ip, port, country, anonymity, https, speed, save_time)"
-               "VALUES(%s, %s, %s, %s, %s, %s, %s, %s)".format(table_name))
+               "(id, ip, port, country, anonymity, https, speed, source, save_time)"
+               "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name))
 
     return command
+
+
+def get_delete_data_command(table_name, id):
+    command = ("DELETE FROM {0} WHERE id={1}".format(table_name, id))
+
+    return command
+
+
+def get_update_data_command(table_name, id, speed):
+    command = ("UPDATE {0} SET speed={1} WHERE id={2}".format(table_name, speed, id))
+
+    return command
+
+
+def get_table_length(sql, table_name):
+    command = ('SELECT COUNT(*) from {}'.format(table_name))
+    sql.execute(command)
+    (count,) = sql.cursor.fetchone()
+    log('get_table_length results:%s' % str(count))
+    return count
+
+
+def get_proxy_info(sql, table_name, id):
+    command = ('select * from {0} limit {1},1;'.format(table_name, id))
+    result = sql.query_one(command)
+    if result != None:
+        data = {
+            'id': result[0],
+            'ip': result[1],
+            'port': result[2],
+            'country': result[3],
+            'anonymity': result[4],
+            'https': result[5],
+            'speed': result[6],
+            'source': result[7],
+            'save_time': result[8],
+        }
+        return data
+    return None
+
+
+def make_dir(dir):
+    log('make dir:%s' % dir)
+    if not os.path.exists(dir):
+        os.makedirs(dir)

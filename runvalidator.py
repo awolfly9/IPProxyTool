@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+
 import logging
 from scrapy import cmdline
 
@@ -9,4 +10,4 @@ if __name__ == '__main__':
             level = logging.DEBUG
     )
 
-    cmdline.execute('scrapy crawl validator'.split())
+    cmdline.execute('scrapy crawl douban'.split())

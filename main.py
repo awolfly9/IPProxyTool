@@ -11,7 +11,7 @@ import time
 from Server import Server
 from Validator import Validator
 from SpiderManager import SpiderManager
-from SqlHelper import SqlHelper
+from sqlhelper import SqlHelper
 from KillPort import kill_ports
 from scrapy import cmdline
 import subprocess

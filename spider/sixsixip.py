@@ -5,17 +5,20 @@ import re
 import requests
 import sys
 import chardet
-from Proxy import Proxy
-from Spider import Spider
+from proxy import Proxy
+from spider import Spider
 from utils import log
 
 
 class SixSixIpSpider(Spider):
     def __init__(self, queue):
         super(SixSixIpSpider, self).__init__(queue)
-        self.name = 'SixSixIpSpider'
+        self.name = 'sixsixip'
         'http://www.66ip.cn/4.html'
-        self.urls = ['http://m.66ip.cn/%s.html' % n for n in range(1, 10)]
+        self.urls = ['http://m.66ip.cn/%s.html' % n for n in range(1, 2)]
+
+        self.dir_log = 'log/spider/sixsixip'
+        self.init()
 
     def parse_page(self, r):
         pattern = re.compile('<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>',

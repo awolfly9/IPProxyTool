@@ -5,15 +5,15 @@ import urllib
 import re
 import requests
 
-from Proxy import Proxy
-from Spider import Spider
+from proxy import Proxy
+from spider import Spider
 from bs4 import BeautifulSoup
 
 
 class FreeProxyListsSpider(Spider):
     def __init__(self, queue):
         super(FreeProxyListsSpider, self).__init__(queue)
-        self.name = 'FreeProxyLists'
+        self.name = 'freeproxylists'
         self.urls = [
             'http://www.freeproxylists.net/'
         ]
@@ -26,6 +26,9 @@ class FreeProxyListsSpider(Spider):
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 Firefox/50.0',
         }
+
+        self.dir_log = 'log/spider/freeproxylists'
+        self.init()
 
     def parse_page(self, r):
         pattern = re.compile('<tr class=(.*?)</tr>', re.S)

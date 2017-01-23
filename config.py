@@ -2,6 +2,8 @@
 
 # 验证 URL
 #VALIDATOR_URL = 'https://www.assetstore.unity3d.com/'
+import json
+
 VALIDATOR_URL = 'https://www.assetstore.unity3d.com/login'
 
 # 验证检查 文本
@@ -21,12 +23,23 @@ database_config = {
 free_ipproxy_database = 'ipproxy'
 free_ipproxy_table = 'free_ipproxy'
 
+baidu_headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Connection': 'keep-alive',
+    'Host': 'www.baidu.com',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 Firefox/50.0',
+}
+
 validator_ipproxy = [
-    # {
-    #     'table': 'baidu',
-    #     'url': 'http://www.baidu.com',
-    #     'success': '百度一下，你就知道',
-    # },
+    {
+        'table': 'baidu',
+        'url': 'https://www.baidu.com/',
+        'success': '百度一下，你就知道',
+        'headers': json.dumps(baidu_headers)
+    },
     # {
     #     'table': 'assetstore',
     #     'url': 'https://www.assetstore.unity3d.com/login',
@@ -37,11 +50,11 @@ validator_ipproxy = [
     #     'url': 'https://github.com/',
     #     'success': 'github',
     # },
-    {
-        'table': 'steam',
-        'url': 'http://store.steampowered.com/',
-        'success': 'store',
-    },
+    # {
+    #     'table': 'steam',
+    #     'url': 'http://store.steampowered.com/',
+    #     'success': 'store',
+    # },
     # {
     #     'table': 'google',
     #     'url': 'https://www.google.com/?gws_rd=ssl',
@@ -49,13 +62,14 @@ validator_ipproxy = [
     # },
 ]
 
-
-
 '''
-7 error_parse value:[<twisted.python.failure.Failure twisted.internet.error.ConnectionLost: Connection to the other side was lost in a non-clean fashion.>]
+7 error_parse value:[<twisted.python.failure.Failure twisted.internet.error.ConnectionLost: Connection to the other
+side was lost in a non-clean fashion.>]
 630 error_parse value:User timeout caused connection failure.
-9 error_parse value:[<twisted.python.failure.Failure twisted.internet.error.ConnectionDone: Connection was closed cleanly.>]
-76 error_parse value:User timeout caused connection failure: Getting http://store.steampowered.com/ took longer than 10 seconds..
+9 error_parse value:[<twisted.python.failure.Failure twisted.internet.error.ConnectionDone: Connection was closed
+cleanly.>]
+76 error_parse value:User timeout caused connection failure: Getting http://store.steampowered.com/ took longer than
+10 seconds..
 193 error_parse value:Connection was refused by other side: 61: Connection refused.
 246 error_parse value:User timeout caused connection failure:
 206 error_parse value:Ignoring non-200 response

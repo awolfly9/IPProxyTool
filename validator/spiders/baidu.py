@@ -12,27 +12,24 @@ from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from twisted.internet.error import TimeoutError
 
+from basevalidator import BaseValidator
 
-class ValidatorSpider(Spider):
-    name = 'validator'
+
+class BaiduSpider(BaseValidator):
+    name = 'baidu'
 
     def __init__(self, name = None, **kwargs):
-        super(ValidatorSpider, self).__init__(name, **kwargs)
-        self.sql = SqlHelper()
+        super(BaiduSpider, self).__init__(name, **kwargs)
 
-        self.validator_info = copy.copy(validator_ipproxy)
+        self.dir_log = 'log/validator/baidu'
+        self.table_name = 'baidu'
         self.init()
 
     def init(self):
-        for i, item in enumerate(self.validator_info):
-            table = item.get('table')
+        make_dir(self.dir_log)
 
-            command = get_create_table_command(table)
-            self.sql.create_table(command)
-
-            self.get_table_length(table)
-
-        self.get_table_length(free_ipproxy_table)
+        command = get_create_table_command(self.table_name)
+        self.sql.create_table(command)
 
     def start_requests(self):
         count = self.get_table_length(free_ipproxy_table)
@@ -42,40 +39,43 @@ class ValidatorSpider(Spider):
             if proxy == None:
                 continue
 
-            for item in self.validator_info:
-                url = item.get('url')
-                self.log('start_requests url:%s' % url)
-                self.log('\n%s\n' % item.get('headers'))
-
-                cur_time = time.time()
-
-                yield Request(
-                        url = url,
-                        headers = json.loads(item.get('headers')),
-                        meta = {
-                            'validator': item,
-                            'cur_time': cur_time,
-                            'download_timeout': 10,
-                            'proxy_info': proxy,
-                            'id': proxy.get('id'),
-                            'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port'))
-                        },
-                        dont_filter = True,
-                        callback = self.success_parse,
-                        errback = self.error_parse,
-                )
+            url = 'https://www.baidu.com/'
+            cur_time = time.time()
+            yield Request(
+                    url = url,
+                    headers = {
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        'Cache-Control': 'max-age=0',
+                        'Connection': 'keep-alive',
+                        'Host': 'www.baidu.com',
+                        'Upgrade-Insecure-Requests': '1',
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 '
+                                      'Firefox/50.0',
+                    },
+                    meta = {
+                        'cur_time': cur_time,
+                        'download_timeout': 10,
+                        'proxy_info': proxy,
+                        'id': proxy.get('id'),
+                        'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port'))
+                    },
+                    dont_filter = True,
+                    callback = self.success_parse,
+                    errback = self.error_parse,
+            )
 
     def success_parse(self, response):
         self.log('success_parse url:%s' % response.url)
-        self.log('success_parse validator:%s' % response.meta['validator'])
-        v = response.meta.get('validator')
 
-        if response.body.find(v.get('success')):
-            table_name = v.get('table')
+        filename = datetime.datetime.now().strftime('%Y-%m-%d %H:%m:%s:%f')
+        self.save_page(filename, response.body)
 
+        if response.body.find('baidu'):
             proxy = response.meta.get('proxy_info')
 
-            command = get_insert_data_command(table_name)
+            command = get_insert_data_command(self.table_name)
 
             speed = time.time() - response.meta.get('cur_time')
 
@@ -111,19 +111,16 @@ class ValidatorSpider(Spider):
         elif failure.check(TimeoutError):
             request = failure.request
             self.logger.error('TimeoutError on url:%s', request.url)
-            self.logger.error('TimeoutError on meta:%s', request.meta['validator'])
 
     def get_table_length(self, table_name):
-        command = ('select id from {} order by id desc limit 1'.format(table_name))
-        results = self.sql.query_one(command)
-        if results != None and len(results) > 0:
-            id = results[0]
-            self.log('id:%s' % id)
-            return int(id)
-        return 0
+        command = ('SELECT COUNT(*) from {}'.format(table_name))
+        self.sql.execute(command)
+        (count,) = self.sql.cursor.fetchone()
+        self.log('get_table_length results:%s' % str(count))
+        return count
 
     def get_proxy_info(self, table_name, id):
-        command = ('select * from {0} where id={1}'.format(table_name, id))
+        command = ('select * from {0} limit {1},1;'.format(table_name, id))
         result = self.sql.query_one(command)
         if result != None:
             data = {
@@ -134,7 +131,13 @@ class ValidatorSpider(Spider):
                 'anonymity': result[4],
                 'https': result[5],
                 'speed': result[6],
-                'save_time': result[7],
+                'source': result[7],
+                'save_time': result[8],
             }
             return data
         return None
+
+    def save_page(self, filename, data):
+        with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:
+            f.write(data)
+            f.close()

@@ -9,8 +9,8 @@ import datetime
 import requests
 
 from config import *
-from SqlHelper import SqlHelper
-from Proxy import Proxy
+from sqlhelper import SqlHelper
+from proxy import Proxy
 from utils import log
 
 

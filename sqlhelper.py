@@ -4,7 +4,7 @@ import json
 import logging
 import random
 
-from Singleton import Singleton
+from singleton import Singleton
 
 import mysql.connector
 from mysql.connector import errorcode
@@ -52,6 +52,7 @@ class SqlHelper(Singleton):
         try:
             log('sql helper execute command:%s' % command)
             data = self.cursor.execute(command)
+            self.database.commit()
             return data
         except Exception, e:
             log('sql helper execute exception msg:%s' % str(e))
