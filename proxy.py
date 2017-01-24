@@ -13,24 +13,26 @@ class Proxy(object):
         self.anonymity = ''
         self.https = ''
         self.speed = ''
-    
-    def set_value(self, ip, port, country, anonymity, https, speed):
+        self.source = ''
+
+    def set_value(self, ip, port, country, anonymity, https, speed, source):
         self.ip = ip
         self.port = port
 
-        try:
-            country_encoding = chardet.detect(country).get('encoding', '')
-            if country_encoding == 'utf-8':
-                self.country = country.decode('utf-8')
-            else:
-                self.country = country
-        except:
-            self.country = country
+        # try:
+        #     country_encoding = chardet.detect(country).get('encoding', '')
+        #     if country_encoding == 'utf-8':
+        #         self.country = country.decode('utf-8')
+        #     else:
+        #         self.country = country
+        # except:
+        self.country = country
 
         self.anonymity = self.get_anonymity_type(anonymity)
 
         self.https = https
         self.speed = speed
+        self.source = source
 
     def get_anonymity_type(self, anonymity):
         '''There are 3 levels of proxies according to their anonymity.
@@ -42,7 +44,7 @@ class Proxy(object):
         '''
 
         if anonymity == u'高匿代理' or anonymity == u'高匿名' or anonymity == 'elite proxy' or \
-           anonymity == u'超级匿名':
+                        anonymity == u'超级匿名':
             return '1'
         elif anonymity == u'匿名' or anonymity == 'anonymous' or anonymity == u'普通匿名':
             return '2'
@@ -59,6 +61,7 @@ class Proxy(object):
             'anonymity': self.anonymity,
             'https': self.https,
             'speed': self.speed,
+            'source': self.source
         }
-        
+
         return str(data)

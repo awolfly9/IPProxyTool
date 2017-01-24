@@ -12,10 +12,10 @@ from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from twisted.internet.error import TimeoutError
 
-from basevalidator import BaseValidator
+from validator import Validator
 
 
-class BaiduSpider(BaseValidator):
+class BaiduSpider(Validator):
     name = 'baidu'
 
     def __init__(self, name = None, **kwargs):
@@ -82,7 +82,7 @@ class BaiduSpider(BaseValidator):
             msg = (
                 None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), proxy.get('anonymity'),
                 proxy.get('https'),
-                speed, None)
+                speed, proxy.get('source'), None)
 
             self.sql.insert_data(command, msg)
 

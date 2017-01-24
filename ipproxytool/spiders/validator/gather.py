@@ -12,10 +12,10 @@ from scrapy.spidermiddlewares.httperror import HttpErrorMiddleware, HttpError
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from twisted.internet.error import TimeoutError
-from basevalidator import BaseValidator
+from validator import Validator
 
 
-class GatherSpider(BaseValidator):
+class GatherSpider(Validator):
     name = 'gather'
 
     def __init__(self, name = None, **kwargs):
@@ -25,7 +25,8 @@ class GatherSpider(BaseValidator):
         self.table_name = 'gather'
         self.timeout = 10
         self.urls = [
-            'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
+            # 'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
+            'http://gatherproxy.com/proxylist/country/?c=China'
         ]
 
         self.init()

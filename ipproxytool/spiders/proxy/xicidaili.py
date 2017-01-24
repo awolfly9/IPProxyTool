@@ -1,15 +1,22 @@
 #-*- coding: utf-8 -*-
+
+
+from scrapy import signals
 from proxy import Proxy
-from spider import Spider
+from basespider import BaseSpider
 from bs4 import BeautifulSoup
 from scrapy.selector import Selector
 from utils import log
+from scrapy import cmdline
+from scrapy.xlib.pydispatch import dispatcher
 
 
-class XiCiDaiLiSpider(Spider):
-    def __init__(self, queue):
-        super(XiCiDaiLiSpider, self).__init__(queue)
-        self.name = 'xici'
+class XiCiDaiLiSpider(BaseSpider):
+    name = 'xici'
+
+    def __init__(self, *a, **kw):
+        super(XiCiDaiLiSpider, self).__init__(*a, **kw)
+
         self.urls = ['http://www.xicidaili.com/nn/%s' % n for n in range(1, 2)]
         self.headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -23,17 +30,10 @@ class XiCiDaiLiSpider(Spider):
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 Firefox/50.0',
         }
 
-        self.dir_log = 'log/spider/xici'
         self.init()
 
-    def parse_page(self, r):
-        soup = BeautifulSoup(r.text, 'lxml')
-        infos = soup.find_all(name='tr', attrs = {'class': 'odd'})
-        for info in infos:
-            # ip = info.
-            pass
-
-        sel = Selector(text = r.text)
+    def parse_page(self, response):
+        sel = Selector(text = response.body)
         infos = sel.xpath('//tr[@class="odd"]').extract()
         for info in infos:
             val = Selector(text = info)
@@ -50,11 +50,8 @@ class XiCiDaiLiSpider(Spider):
                     country = country,
                     anonymity = anonymity,
                     https = 'no',
-                    speed = 1
+                    speed = 1,
+                    source = self.name,
             )
 
             self.add_proxy(proxy = proxy)
-
-
-
-

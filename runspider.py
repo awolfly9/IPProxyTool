@@ -1,60 +1,50 @@
-# coding=utf-8
+#-*- coding: utf-8 -*-
 
 import logging
+import os
+
+import sys
+import scrapydo
 import time
 
-from proxy import Proxy
-from spider.usproxy import UsProxySpider
-from spider.freeproxylists import FreeProxyListsSpider
-from spider.gatherproxy import GatherproxySpider
-from spider.sixsixip import SixSixIpSpider
-from spider.kuaidaili import KuaiDaiLiSpider
-from spider.peuland import PeulandSpider
-from spider.xicidaili import XiCiDaiLiSpider
+scrapydo.setup()
 
-from utils import *
-from sqlhelper import SqlHelper
-from config import *
-
-
-class RunSpider(object):
-    def __init__(self, queue):
-        self.spiders = []
-        self.queue = queue
-        self.sql = SqlHelper()
-        self.register_spider()
-        self.init()
-
-    def init(self):
-        self.create_table()
-
-    def create_table(self):
-        command = get_create_table_command(free_ipproxy_table)
-
-        self.sql.create_table(command)
-
-    def register_spider(self):
-        self.spiders.append(XiCiDaiLiSpider(self.queue))
-        self.spiders.append(SixSixIpSpider(self.queue))
-        # self.spiders.append(UsProxySpider(self.queue))
-        # self.spiders.append(FreeProxyListsSpider(self.queue))
-        # self.spiders.append(GatherproxySpider(self.queue))
-        # self.spiders.append(KuaiDaiLiSpider(self.queue))
-        # self.spiders.append(PeulandSpider(self.queue))
-
-    def run(self):
-        while (True):
-            command = 'DELETE FROM {0} WHERE save_time < now() - 3600'.format(free_ipproxy_table)
-            self.sql.execute(command)
-
-            for spider in self.spiders:
-                log('%s get proxy ip start' % spider.name)
-                spider.run()
-
-            log('Spider waiting...')
-            time.sleep(WAIT_TIME)
-
+from scrapy import cmdline
+from scrapy.crawler import CrawlerProcess
+from twisted.internet import reactor
+from ipproxytool.spiders.proxy.xicidaili import XiCiDaiLiSpider
+from ipproxytool.spiders.proxy.sixsixip import SixSixIpSpider
+from ipproxytool.spiders.proxy.ip181 import IpOneEightOneSpider
+from ipproxytool.spiders.proxy.kuaidaili import KuaiDaiLiSpider
+from ipproxytool.spiders.proxy.gatherproxy import GatherproxySpider
 
 if __name__ == '__main__':
-    spider = RunSpider(None)
-    spider.run()
+
+    os.chdir(sys.path[0])
+
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
+    logging.basicConfig(
+            filename = 'log/proxy.log',
+            format = '%(levelname)s %(asctime)s: %(message)s',
+            level = logging.DEBUG
+    )
+
+    while True:
+        print('*******************run spider start...*******************')
+        # process = CrawlerProcess()
+        # process.crawl(XiCiDaiLiSpider)
+        # process.crawl(SixSixIpSpider)
+        # process.start()  # the script will block here until all crawling jobs are finished
+        #
+        items = scrapydo.run_spider(XiCiDaiLiSpider)
+        items = scrapydo.run_spider(SixSixIpSpider)
+        items = scrapydo.run_spider(IpOneEightOneSpider)
+        items = scrapydo.run_spider(KuaiDaiLiSpider)
+        items = scrapydo.run_spider(GatherproxySpider)
+
+
+        print('*******************run spider waiting...*******************')
+        # scrapydo.setup()
+        time.sleep(300)

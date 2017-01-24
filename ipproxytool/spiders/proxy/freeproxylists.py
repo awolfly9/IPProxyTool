@@ -4,16 +4,21 @@ import logging
 import urllib
 import re
 import requests
+import sys
 
 from proxy import Proxy
-from spider import Spider
+from basespider import BaseSpider
 from bs4 import BeautifulSoup
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
-class FreeProxyListsSpider(Spider):
-    def __init__(self, queue):
-        super(FreeProxyListsSpider, self).__init__(queue)
-        self.name = 'freeproxylists'
+
+class FreeProxyListsSpider(BaseSpider):
+    name = 'freeproxylists'
+
+    def __init__(self, *a, **kwargs):
+        super(FreeProxyListsSpider, self).__init__(*a, **kwargs)
         self.urls = [
             'http://www.freeproxylists.net/'
         ]
@@ -27,12 +32,11 @@ class FreeProxyListsSpider(Spider):
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 Firefox/50.0',
         }
 
-        self.dir_log = 'log/spider/freeproxylists'
         self.init()
 
-    def parse_page(self, r):
+    def parse_page(self, response):
         pattern = re.compile('<tr class=(.*?)</tr>', re.S)
-        items = re.findall(pattern = pattern, string = r.text)
+        items = re.findall(pattern = pattern, string = response.body)
         for i, item in enumerate(items):
             if i > 0:
                 if 'async' in item:
@@ -55,7 +59,8 @@ class FreeProxyListsSpider(Spider):
                         country = tbodys[4].text.encode(),
                         anonymity = tbodys[3].text.encode(),
                         https = 'no',
-                        speed = 1
+                        speed = 1,
+                        source = self.name,
                 )
 
                 self.add_proxy(proxy = proxy)

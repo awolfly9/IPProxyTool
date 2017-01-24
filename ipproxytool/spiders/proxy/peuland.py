@@ -5,31 +5,53 @@ import logging
 
 import requests
 import base64
+
+from scrapy.http import Request
 from proxy import Proxy
 from utils import log
-from spider import Spider
+from basespider import BaseSpider
 
 
-class PeulandSpider(Spider):
-    def __init__(self, queue):
-        super(PeulandSpider, self).__init__(queue)
-        self.name = 'peuland'
+class PeulandSpider(BaseSpider):
+    name = 'peuland'
+
+    def __init__(self, *a, **kwargs):
+        super(PeulandSpider, self).__init__(*a, **kwargs)
         self.urls = ['https://proxy.peuland.com/proxy_list_by_category.htm']
+        self.headers = {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Connection': 'keep-alive',
+            'Host': 'proxy.peuland.com',
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 Firefox/50.0',
+        }
+
+        self.meta = {
+            'download_timeout': self.timeout,
+            'cookiejar': 1,
+        }
+
         self.timeout = 20
 
-        self.dir_log = 'log/spider/peuland'
         self.init()
 
-    def run(self):
+    def start_requests(self):
         for i, url in enumerate(self.urls):
-            try:
-                r = requests.get(url = url, timeout = self.timeout)
-                self.write(r.text.encode('utf-8'))
-                self.parse_page(r)
-            except Exception, e:
-                log('spider run %s Exception:%s' % (self.name, str(e)), logging.WARNING)
+            yield Request(
+                    url = url,
+                    headers = self.headers,
+                    meta = self.meta,
+                    dont_filter = True,
+                    callback = self.parse_page,
+                    errback = self.error_parse,
+            )
 
-    def parse_page(self, r):
+    def parse_page(self, response):
+
+        self.log('cookiejar:%s' % response.meta.get('cookiejar'))
+
         headers = {
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate, br',
@@ -55,7 +77,7 @@ class PeulandSpider(Spider):
             'php_id': '1288641658',
         }
 
-        for i in range(1, 9):
+        for i in range(1, 3):
             fromdata = {
                 'country_code': '',
                 'is_clusters': '',
@@ -98,11 +120,6 @@ class PeulandSpider(Spider):
                 status_cnc = base64.b64decode(item.get('status_cnc'))
                 status_ctn = base64.b64decode(item.get('status_ctn'))
 
-                # log('type:%s, https:%s, level_type:%s, time_total:%s, time_downloadspeed:%s, country:%s,
-                # country_zw:%s'
-                #     'status_cnc:%s, status_ctn:%s' % (type, https, level_type, time_total, time_downloadspeed,
-                # country, country_zw, status_cnc, status_ctn))
-
                 proxy = Proxy()
                 proxy.set_value(
                         ip = ip,
@@ -110,15 +127,8 @@ class PeulandSpider(Spider):
                         country = country_zw,
                         anonymity = level_type,
                         https = https,
-                        speed = '-1',
+                        speed = 1,
+                        source = self.name,
                 )
 
-                log('PeulandSpider run proxy:%s' % str(proxy))
-
                 self.add_proxy(proxy)
-
-
-if __name__ == '__main__':
-    queue = []
-    spider = PeulandSpider(queue)
-    spider.run()

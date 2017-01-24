@@ -89,11 +89,14 @@ def get_update_data_command(table_name, id, speed):
 
 
 def get_table_length(sql, table_name):
-    command = ('SELECT COUNT(*) from {}'.format(table_name))
-    sql.execute(command)
-    (count,) = sql.cursor.fetchone()
-    log('get_table_length results:%s' % str(count))
-    return count
+    try:
+        command = ('SELECT COUNT(*) from {}'.format(table_name))
+        sql.execute(command)
+        (count,) = sql.cursor.fetchone()
+        log('get_table_length results:%s' % str(count))
+        return count
+    except:
+        return 0
 
 
 def get_proxy_info(sql, table_name, id):
@@ -113,6 +116,12 @@ def get_proxy_info(sql, table_name, id):
         }
         return data
     return None
+
+
+def sql_insert_proxy(sql, table_name, proxy):
+    command = get_insert_data_command(table_name)
+    msg = (None, proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed, proxy.source, None)
+    sql.insert_data(command, msg)
 
 
 def make_dir(dir):

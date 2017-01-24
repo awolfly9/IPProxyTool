@@ -9,25 +9,37 @@ from bs4 import BeautifulSoup as bs4
 from lxml import html
 
 from proxy import Proxy
-from spider import Spider
+from basespider import BaseSpider
 
 
-class GatherproxySpider(Spider):
-    def __init__(self, queue):
-        super(GatherproxySpider, self).__init__(queue)
-        self.name = 'gather'
+class GatherproxySpider(BaseSpider):
+    name = 'gatherproxy'
+
+    def __init__(self, *a, **kwargs):
+        super(GatherproxySpider, self).__init__(*a, **kwargs)
         self.urls = [
-            'http://gatherproxy.com/',
-            'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
+            # 'http://gatherproxy.com/',
+            # 'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
+            'http://gatherproxy.com/proxylist/country/?c=China',
         ]
 
-        self.dir_log = 'log/spider/gather'
+        self.headers = {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Connection': 'keep-alive',
+            'Host': 'gatherproxy.com',
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 '
+                          'Firefox/50.0',
+        }
+
         self.proxies = self.get_proxy()
         self.init()
 
-    def parse_page(self, r):
+    def parse_page(self, response):
         pattern = re.compile('gp.insertPrx\((.*?)\)', re.S)
-        items = re.findall(pattern, r.text)
+        items = re.findall(pattern, response.body)
         for item in items:
             data = json.loads(item)
             #端口用的是十六进制
@@ -41,16 +53,17 @@ class GatherproxySpider(Spider):
                     country = data.get('PROXY_COUNTRY'),
                     anonymity = data.get('PROXY_TYPE'),
                     https = 'no',
-                    speed = 1
+                    speed = 1,
+                    source = self.name,
             )
 
             self.add_proxy(proxy = proxy)
 
     def get_proxy(self):
-        url = 'http://127.0.0.1:8000/?name={0}'.format(self.name)
-        r = requests.get(url = url)
-        if r.text != None and r.text != '':
-            try:
+        try:
+            url = 'http://127.0.0.1:8000/?name={0}'.format(self.name)
+            r = requests.get(url = url)
+            if r.text != None and r.text != '':
                 data = json.loads(r.text)
                 if len(data) > 0:
                     proxy = random.choice(data)
@@ -62,7 +75,5 @@ class GatherproxySpider(Spider):
                         'http': 'http://%s' % address
                     }
                     return proxies
-            except:
-                return None
-
-        return None
+        except:
+            return None
