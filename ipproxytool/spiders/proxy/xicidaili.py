@@ -1,14 +1,8 @@
 #-*- coding: utf-8 -*-
 
-
-from scrapy import signals
 from proxy import Proxy
 from basespider import BaseSpider
-from bs4 import BeautifulSoup
 from scrapy.selector import Selector
-from utils import log
-from scrapy import cmdline
-from scrapy.xlib.pydispatch import dispatcher
 
 
 class XiCiDaiLiSpider(BaseSpider):

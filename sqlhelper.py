@@ -1,15 +1,10 @@
 #-*- coding: utf-8 -*-
 
-import json
 import logging
-import random
+import mysql.connector
 
 from singleton import Singleton
-
-import mysql.connector
-from mysql.connector import errorcode
 from utils import log
-import traceback
 from config import *
 
 
@@ -27,13 +22,15 @@ class SqlHelper(Singleton):
 
     def create_database(self):
         try:
-            self.cursor.execute('CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET \'utf8\' ' % self.database_name)
+            command = 'CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET \'utf8\' ' % self.database_name
+            log('sql helper create_database command:%s' % command)
+            self.cursor.execute(command)
         except Exception, e:
             log('SqlHelper create_database exception:%s' % str(e), logging.WARNING)
 
     def create_table(self, command):
         try:
-            log('sql helper create command:%s' % command)
+            log('sql helper create_table command:%s' % command)
             self.cursor.execute(command)
             self.database.commit()
         except Exception, e:

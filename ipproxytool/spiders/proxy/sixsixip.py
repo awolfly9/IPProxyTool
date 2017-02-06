@@ -1,13 +1,8 @@
 # coding=utf-8
 
-
 import re
-import requests
-import sys
-import chardet
-from proxy import Proxy
-from utils import log
 
+from proxy import Proxy
 from basespider import BaseSpider
 
 

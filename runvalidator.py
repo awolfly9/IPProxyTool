@@ -6,13 +6,13 @@ import sys
 import time
 import scrapydo
 
-scrapydo.setup()
-
 from scrapy import cmdline
 from scrapy.crawler import CrawlerProcess
 from ipproxytool.spiders.validator.douban import DoubanSpider
 from ipproxytool.spiders.validator.assetstore import AssetStoreSpider
 from ipproxytool.spiders.validator.gather import GatherSpider
+
+scrapydo.setup()
 
 if __name__ == '__main__':
 

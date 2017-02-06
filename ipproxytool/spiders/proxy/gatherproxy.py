@@ -1,12 +1,9 @@
 # coding=utf-8
 
 import json
-import logging
 import random
 import re
 import requests
-from bs4 import BeautifulSoup as bs4
-from lxml import html
 
 from proxy import Proxy
 from basespider import BaseSpider
@@ -18,8 +15,8 @@ class GatherproxySpider(BaseSpider):
     def __init__(self, *a, **kwargs):
         super(GatherproxySpider, self).__init__(*a, **kwargs)
         self.urls = [
-            # 'http://gatherproxy.com/',
-            # 'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
+            'http://gatherproxy.com/',
+            'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
             'http://gatherproxy.com/proxylist/country/?c=China',
         ]
 

@@ -6,7 +6,6 @@ import re
 import subprocess
 import traceback
 import time
-
 import datetime
 
 
@@ -23,6 +22,7 @@ def log(msg, level = logging.DEBUG):
             logging.log(level, line.strip())
 
 
+# 服务器使用，清理端口占用
 def kill_ports(ports):
     for port in ports:
         log('kill %s start' % port)
@@ -50,6 +50,7 @@ def kill_ports(ports):
     time.sleep(1)
 
 
+# 获取创建存储代理 ip 表的命令
 def get_create_table_command(table_name):
     command = (
         "CREATE TABLE IF NOT EXISTS {} ("
@@ -68,6 +69,7 @@ def get_create_table_command(table_name):
     return command
 
 
+# 获取插入代理 ip 表的命令
 def get_insert_data_command(table_name):
     command = ("INSERT IGNORE INTO {} "
                "(id, ip, port, country, anonymity, https, speed, source, save_time)"
@@ -76,18 +78,21 @@ def get_insert_data_command(table_name):
     return command
 
 
+# 获取删除指定 id 的命令
 def get_delete_data_command(table_name, id):
     command = ("DELETE FROM {0} WHERE id={1}".format(table_name, id))
 
     return command
 
 
+# 获取更新指定 id 的命令
 def get_update_data_command(table_name, id, speed):
     command = ("UPDATE {0} SET speed={1} WHERE id={2}".format(table_name, speed, id))
 
     return command
 
 
+# 获取表的长度
 def get_table_length(sql, table_name):
     try:
         command = ('SELECT COUNT(*) from {}'.format(table_name))
@@ -99,6 +104,7 @@ def get_table_length(sql, table_name):
         return 0
 
 
+# 通过指定 id 得到代理信息
 def get_proxy_info(sql, table_name, id):
     command = ('select * from {0} limit {1},1;'.format(table_name, id))
     result = sql.query_one(command)
@@ -118,6 +124,7 @@ def get_proxy_info(sql, table_name, id):
     return None
 
 
+# 插入代理
 def sql_insert_proxy(sql, table_name, proxy):
     command = get_insert_data_command(table_name)
     msg = (None, proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed, proxy.source, None)

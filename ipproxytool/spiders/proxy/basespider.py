@@ -1,15 +1,11 @@
 # coding=utf-8
 
-import logging
-import time
-import datetime
-import requests
 import sys
 
 from utils import *
 from config import *
 from sqlhelper import SqlHelper
-from scrapy.spiders import Spider, CrawlSpider
+from scrapy.spiders import Spider
 from scrapy.http import Request
 
 reload(sys)
@@ -25,15 +21,16 @@ class BaseSpider(Spider):
         self.urls = []
         self.headers = {}
         self.timeout = 10
-        self.meta = {
-            'download_timeout': self.timeout,
-        }
 
         self.sql = SqlHelper()
 
         self.dir_log = 'log/proxy/%s' % self.name
 
     def init(self):
+        self.meta = {
+            'download_timeout': self.timeout,
+        }
+
         make_dir(self.dir_log)
 
         command = get_create_table_command(free_ipproxy_table)

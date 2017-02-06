@@ -2,7 +2,6 @@
 
 import json
 import logging
-
 import requests
 import base64
 

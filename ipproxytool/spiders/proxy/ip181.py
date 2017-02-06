@@ -1,18 +1,15 @@
 #-*- coding: utf-8 -*-
-import sys
+
 from scrapy import Selector
 from basespider import BaseSpider
 from proxy import Proxy
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class IpOneEightOneSpider(BaseSpider):
     name = 'ip181'
 
     def __init__(self, *a, **kw):
-        super(IpOneEightOne, self).__init__(*a, **kw)
+        super(IpOneEightOneSpider, self).__init__(*a, **kw)
 
         self.urls = ['http://www.ip181.com/']
         self.headers = {
@@ -20,7 +17,6 @@ class IpOneEightOneSpider(BaseSpider):
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'en-US,en;q=0.5',
             'Connection': 'keep-alive',
-            'Cookie': 'ASPSESSIONIDQSSDSCAT=GDBMPOHDBJGAAOIOGDFFFJBC; a2837_pages=1; a2837_times=1',
             'Host': 'www.ip181.com',
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 Firefox/50.0',
@@ -29,9 +25,12 @@ class IpOneEightOneSpider(BaseSpider):
         self.init()
 
     def parse_page(self, response):
+        self.log(dir(response))
+        self.log('body type:%s' % type(response.body))
+        self.log('body_as_unicode type:%s' % type(response.body_as_unicode))
         self.write(response.body)
 
-        sel = Selector(text = response.body)
+        sel = Selector(response)
         infos = sel.xpath('//tbody/tr').extract()
         for i, info in enumerate(infos):
             if i == 0:

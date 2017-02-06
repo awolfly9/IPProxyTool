@@ -1,17 +1,11 @@
 # coding=utf-8
 
-import logging
 import urllib
 import re
-import requests
-import sys
 
 from proxy import Proxy
 from basespider import BaseSpider
 from bs4 import BeautifulSoup
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class FreeProxyListsSpider(BaseSpider):

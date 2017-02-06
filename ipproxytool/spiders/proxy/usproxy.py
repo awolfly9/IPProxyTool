@@ -1,12 +1,6 @@
 # coding=utf-8
 
 import re
-import requests
-import logging
-
-import time
-import Queue
-from bs4 import BeautifulSoup
 
 from proxy import Proxy
 from basespider import BaseSpider

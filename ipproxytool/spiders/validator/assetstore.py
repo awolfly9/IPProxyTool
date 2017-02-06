@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 
-
 from scrapy.http import Request
 from validator import Validator
 from config import *
@@ -88,31 +87,3 @@ class AssetStoreSpider(Validator):
                     callback = self.success_parse,
                     errback = self.error_parse,
             )
-
-    def success_parse(self, response):
-        self.log('success_parse proxy:%s' % str(response.meta.get('proxy')))
-
-        filename = datetime.datetime.now().strftime('%Y-%m-%d %H_%M_%S_%f')
-        # self.save_page(filename, response.body)
-
-        proxy = response.meta.get('proxy_info')
-        speed = time.time() - response.meta.get('cur_time')
-        table = response.meta.get('table')
-        id = response.meta.get('id')
-
-        self.log('speed:%s table:%s id:%s' % (speed, table, id))
-
-        if table == self.name:
-            if speed > self.timeout:
-                command = get_delete_data_command(table, id)
-                self.sql.execute(command)
-            else:
-                command = get_update_data_command(table, id, speed)
-                self.sql.execute(command)
-        else:
-            if speed < self.timeout:
-                command = get_insert_data_command(self.name)
-                msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), proxy.get('anonymity'),
-                       proxy.get('https'), speed, proxy.get('source'), None)
-
-                self.sql.insert_data(command, msg)

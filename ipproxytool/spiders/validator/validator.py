@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 
+from scrapy import Request
 from scrapy.spiders import Spider
+from config import free_ipproxy_table
 from sqlhelper import SqlHelper
 from utils import *
 
@@ -11,8 +13,13 @@ class Validator(Spider):
     def __init__(self, name = None, **kwargs):
         super(Validator, self).__init__(name, **kwargs)
         self.sql = SqlHelper()
+
         self.dir_log = 'log/validator/%s' % self.name
         self.timeout = 10
+
+        self.urls = []
+        self.headers = None
+        self.success_mark = ''
 
     def init(self):
         make_dir(self.dir_log)
@@ -20,11 +27,65 @@ class Validator(Spider):
         command = get_create_table_command(self.name)
         self.sql.create_table(command)
 
+    def start_requests(self):
+        count = get_table_length(self.sql, self.name)
+        count_free = get_table_length(self.sql, free_ipproxy_table)
+
+        for i in range(0, count + count_free):
+            table = self.name if (i < count) else free_ipproxy_table
+
+            proxy = get_proxy_info(self.sql, table, i)
+            if proxy == None:
+                continue
+
+            for url in self.urls:
+                cur_time = time.time()
+                yield Request(
+                        url = url,
+                        headers = self.headers,
+                        meta = {
+                            'cur_time': cur_time,
+                            'download_timeout': self.timeout,
+                            'proxy_info': proxy,
+                            'table': table,
+                            'id': proxy.get('id'),
+                            'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
+                        },
+                        dont_filter = True,
+                        callback = self.success_parse,
+                        errback = self.error_parse,
+                )
+
     def success_parse(self, response):
-        pass
+        self.log('name:%s success_parse proxy:%s' % (self.name, str(response.meta.get('proxy_info'))))
+
+        filename = datetime.datetime.now().strftime('%Y-%m-%d %H_%M_%S_%f')
+        self.save_page(filename, response.body)
+
+        if response.body.find(self.success_mark) or self.success_mark is '':
+            proxy = response.meta.get('proxy_info')
+            speed = time.time() - response.meta.get('cur_time')
+            table = response.meta.get('table')
+            id = response.meta.get('id')
+
+            self.log('speed:%s table:%s id:%s' % (speed, table, id))
+
+            if table == self.name:
+                if speed > self.timeout:
+                    command = get_delete_data_command(table, id)
+                    self.sql.execute(command)
+                else:
+                    command = get_update_data_command(table, id, speed)
+                    self.sql.execute(command)
+            else:
+                if speed < self.timeout:
+                    command = get_insert_data_command(self.name)
+                    msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), proxy.get('anonymity'),
+                           proxy.get('https'), speed, proxy.get('source'), None)
+
+                    self.sql.insert_data(command, msg)
 
     def error_parse(self, failure):
-        self.log('error_parse')
         self.log('error_parse value:%s' % failure.value)
 
         proxy = failure.request.meta.get('proxy_info')

@@ -1,8 +1,5 @@
 #-*- coding: utf-8 -*-
 
-import random
-import chardet
-
 
 class Proxy(object):
     def __init__(self):
@@ -15,21 +12,24 @@ class Proxy(object):
         self.speed = ''
         self.source = ''
 
+    def __str__(self):
+        data = {
+            'ip': self.ip,
+            'port': self.port,
+            'country': self.country,
+            'anonymity': self.anonymity,
+            'https': self.https,
+            'speed': self.speed,
+            'source': self.source
+        }
+
+        return str(data)
+
     def set_value(self, ip, port, country, anonymity, https, speed, source):
         self.ip = ip
         self.port = port
-
-        # try:
-        #     country_encoding = chardet.detect(country).get('encoding', '')
-        #     if country_encoding == 'utf-8':
-        #         self.country = country.decode('utf-8')
-        #     else:
-        #         self.country = country
-        # except:
         self.country = country
-
         self.anonymity = self.get_anonymity_type(anonymity)
-
         self.https = https
         self.speed = speed
         self.source = source
@@ -52,16 +52,3 @@ class Proxy(object):
             return '3'
         else:
             return '3'
-
-    def __str__(self):
-        data = {
-            'ip': self.ip,
-            'port': self.port,
-            'country': self.country,
-            'anonymity': self.anonymity,
-            'https': self.https,
-            'speed': self.speed,
-            'source': self.source
-        }
-
-        return str(data)
