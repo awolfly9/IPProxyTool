@@ -9,3 +9,5 @@ database_config = {
 
 free_ipproxy_database = 'ipproxy'
 free_ipproxy_table = 'free_ipproxy'
+
+data_port = '8000'

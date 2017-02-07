@@ -1,8 +1,5 @@
 #-*- coding: utf-8 -*-
 
-from scrapy.http import Request
-from config import *
-from utils import *
 from validator import Validator
 
 

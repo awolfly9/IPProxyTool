@@ -1,12 +1,11 @@
 #-*- coding: utf-8 -*-
 
-import BaseHTTPServer
+import config
 
-from server.ipproxyserver import IpProxyServer
+from server import dataserver
 from utils import kill_ports
 
 if __name__ == '__main__':
-    kill_ports(['8000'])
+    kill_ports([config.data_port])
 
-    server = BaseHTTPServer.HTTPServer(('0.0.0.0', 8000), IpProxyServer)
-    server.serve_forever()
+    dataserver.start_api_server()

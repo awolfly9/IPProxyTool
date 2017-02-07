@@ -106,7 +106,7 @@ def get_table_length(sql, table_name):
 
 # 通过指定 id 得到代理信息
 def get_proxy_info(sql, table_name, id):
-    command = ('select * from {0} limit {1},1;'.format(table_name, id))
+    command = ('SELECT * FROM {0} limit {1},1;'.format(table_name, id))
     result = sql.query_one(command)
     if result != None:
         data = {

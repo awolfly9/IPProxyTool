@@ -1,9 +1,12 @@
 #-*- coding: utf-8 -*-
+import json
+import time
+
+import config
+import utils
 
 from scrapy.http import Request
 from validator import Validator
-from config import *
-from utils import *
 
 
 class AssetStoreSpider(Validator):
@@ -60,13 +63,13 @@ class AssetStoreSpider(Validator):
             'X-Unity-Session': '26c4202eb475d02864b40827dfff11a14657aa41',
         }
 
-        count = get_table_length(self.sql, self.name)
-        count_free = get_table_length(self.sql, free_ipproxy_table)
+        count = utils.get_table_length(self.sql, self.name)
+        count_free = utils.get_table_length(self.sql, config.free_ipproxy_table)
 
         for i in range(0, count + count_free):
-            table = self.name if (i < count) else free_ipproxy_table
+            table = self.name if (i < count) else config.free_ipproxy_table
 
-            proxy = get_proxy_info(self.sql, table, i)
+            proxy = utils.get_proxy_info(self.sql, table, i)
             if proxy == None:
                 continue
 

@@ -45,4 +45,8 @@ class delete(object):
         name = inputs.get('name')
         ip = inputs.get('ip')
         command = "DELETE FROM {0} WHERE ip=\'{1}\'".format(name, ip)
-        return sql.execute(command)
+        sql.execute(command)
+
+        command = "SELECT ip FROM {0} WHERE ip=\'{1}\'".format(name, ip)
+        res = sql.query_one(command)
+        return res is None

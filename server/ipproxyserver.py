@@ -67,7 +67,7 @@ class IpProxyServer(BaseHTTPRequestHandler):
 
             table_name = dict.get('name')
 
-            command = "select * from {0}".format(table_name)
+            command = "SELECT * FROM {0}".format(table_name)
 
             data = sql.query(command)
             # data = str(data)

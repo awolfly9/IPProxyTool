@@ -1,10 +1,14 @@
 #-*- coding: utf-8 -*-
+import time
+
+import datetime
+
+import utils
 
 from scrapy import Request
 from scrapy.spiders import Spider
 from config import free_ipproxy_table
 from sqlhelper import SqlHelper
-from utils import *
 
 
 class Validator(Spider):
@@ -22,19 +26,19 @@ class Validator(Spider):
         self.success_mark = ''
 
     def init(self):
-        make_dir(self.dir_log)
+        utils.make_dir(self.dir_log)
 
-        command = get_create_table_command(self.name)
+        command = utils.get_create_table_command(self.name)
         self.sql.create_table(command)
 
     def start_requests(self):
-        count = get_table_length(self.sql, self.name)
-        count_free = get_table_length(self.sql, free_ipproxy_table)
+        count = utils.get_table_length(self.sql, self.name)
+        count_free = utils.get_table_length(self.sql, free_ipproxy_table)
 
         for i in range(0, count + count_free):
             table = self.name if (i < count) else free_ipproxy_table
 
-            proxy = get_proxy_info(self.sql, table, i)
+            proxy = utils.get_proxy_info(self.sql, table, i)
             if proxy == None:
                 continue
 
@@ -72,14 +76,14 @@ class Validator(Spider):
 
             if table == self.name:
                 if speed > self.timeout:
-                    command = get_delete_data_command(table, id)
+                    command = utils.get_delete_data_command(table, id)
                     self.sql.execute(command)
                 else:
-                    command = get_update_data_command(table, id, speed)
+                    command = utils.get_update_data_command(table, id, speed)
                     self.sql.execute(command)
             else:
                 if speed < self.timeout:
-                    command = get_insert_data_command(self.name)
+                    command = utils.get_insert_data_command(self.name)
                     msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), proxy.get('anonymity'),
                            proxy.get('https'), speed, proxy.get('source'), None)
 
@@ -93,7 +97,7 @@ class Validator(Spider):
         id = failure.request.meta.get('id')
 
         if table == self.name:
-            command = get_delete_data_command(table, id)
+            command = utils.get_delete_data_command(table, id)
             self.sql.execute(command)
         else:
             # TODO... 如果 ip 验证失败应该针对特定的错误类型，进行处理

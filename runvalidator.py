@@ -5,6 +5,7 @@ import os
 import sys
 import time
 import scrapydo
+import utils
 
 from scrapy import cmdline
 from scrapy.crawler import CrawlerProcess
@@ -28,9 +29,9 @@ if __name__ == '__main__':
     )
 
     while True:
-        print('----------------validator start...-----------------------')
-        # items = scrapydo.run_spider(DoubanSpider)
-        items = scrapydo.run_spider(GatherSpider)
-        items = scrapydo.run_spider(AssetStoreSpider)
-        print('*************************validator waiting...*************************')
+        utils.log('----------------validator start...-----------------------')
+        items = scrapydo.run_spider(DoubanSpider)
+        # items = scrapydo.run_spider(GatherSpider)
+        # items = scrapydo.run_spider(AssetStoreSpider)
+        utils.log('*************************validator waiting...*************************')
         time.sleep(60)

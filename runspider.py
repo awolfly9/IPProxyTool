@@ -5,6 +5,8 @@ import os
 import sys
 import scrapydo
 import time
+import utils
+import config
 
 from sqlhelper import SqlHelper
 from ipproxytool.spiders.proxy.xicidaili import XiCiDaiLiSpider
@@ -12,7 +14,6 @@ from ipproxytool.spiders.proxy.sixsixip import SixSixIpSpider
 from ipproxytool.spiders.proxy.ip181 import IpOneEightOneSpider
 from ipproxytool.spiders.proxy.kuaidaili import KuaiDaiLiSpider
 from ipproxytool.spiders.proxy.gatherproxy import GatherproxySpider
-from config import free_ipproxy_table
 
 scrapydo.setup()
 
@@ -31,9 +32,9 @@ if __name__ == '__main__':
     sql = SqlHelper()
 
     while True:
-        print('*******************run spider start...*******************')
+        utils.log('*******************run spider start...*******************')
 
-        command = 'delete from {0} where `save_time` < now() - {1};'.format(free_ipproxy_table, 3600)
+        command = 'DELETE FROM {0} WHERE save_time < now() - {1}'.format(config.free_ipproxy_table, 1800)
         sql.execute(command)
 
         items = scrapydo.run_spider(XiCiDaiLiSpider)
@@ -42,5 +43,5 @@ if __name__ == '__main__':
         items = scrapydo.run_spider(KuaiDaiLiSpider)
         items = scrapydo.run_spider(GatherproxySpider)
 
-        print('*******************run spider waiting...*******************')
+        utils.log('*******************run spider waiting...*******************')
         time.sleep(300)

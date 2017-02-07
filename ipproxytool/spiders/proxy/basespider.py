@@ -2,8 +2,11 @@
 
 import sys
 
-from utils import *
-from config import *
+import datetime
+
+import config
+import utils
+
 from sqlhelper import SqlHelper
 from scrapy.spiders import Spider
 from scrapy.http import Request
@@ -31,9 +34,9 @@ class BaseSpider(Spider):
             'download_timeout': self.timeout,
         }
 
-        make_dir(self.dir_log)
+        utils.make_dir(self.dir_log)
 
-        command = get_create_table_command(free_ipproxy_table)
+        command = utils.get_create_table_command(config.free_ipproxy_table)
         self.sql.execute(command)
 
     def start_requests(self):
@@ -55,7 +58,7 @@ class BaseSpider(Spider):
         pass
 
     def add_proxy(self, proxy):
-        sql_insert_proxy(self.sql, free_ipproxy_table, proxy)
+        utils.sql_insert_proxy(self.sql, config.free_ipproxy_table, proxy)
 
     def write(self, data):
         with open('%s/%s.html' % (
