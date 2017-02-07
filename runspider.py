@@ -24,6 +24,8 @@ if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
+    utils.make_dir('log')
+
     logging.basicConfig(
             filename = 'log/proxy.log',
             format = '%(levelname)s %(asctime)s: %(message)s',
