@@ -30,8 +30,8 @@ if __name__ == '__main__':
 
     while True:
         utils.log('----------------validator start...-----------------------')
-        items = scrapydo.run_spider(DoubanSpider)
+        # items = scrapydo.run_spider(DoubanSpider)
         # items = scrapydo.run_spider(GatherSpider)
-        # items = scrapydo.run_spider(AssetStoreSpider)
+        items = scrapydo.run_spider(AssetStoreSpider)
         utils.log('*************************validator waiting...*************************')
         time.sleep(60)

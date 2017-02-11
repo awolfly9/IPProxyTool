@@ -8,4 +8,4 @@ from utils import kill_ports
 if __name__ == '__main__':
     kill_ports([config.data_port])
 
-    dataserver.start_api_server()
+    dataserver.run_data_server()
