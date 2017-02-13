@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
+
 import time
-
 import datetime
-
 import utils
 
 from scrapy import Request
 from scrapy.spiders import Spider
+from scrapy.utils.project import get_project_settings
 from config import free_ipproxy_table
 from sqlhelper import SqlHelper
 
@@ -61,7 +61,8 @@ class Validator(Spider):
                 )
 
     def success_parse(self, response):
-        self.log('name:%s success_parse proxy:%s' % (self.name, str(response.meta.get('proxy_info'))))
+        utils.log('name:%s success_parse proxy:%s meta:%s' % (
+            self.name, str(response.meta.get('proxy_info')), str(response.meta)))
 
         filename = datetime.datetime.now().strftime('%Y-%m-%d %H_%M_%S_%f')
         self.save_page(filename, response.body)
@@ -72,7 +73,7 @@ class Validator(Spider):
             table = response.meta.get('table')
             id = response.meta.get('id')
 
-            self.log('speed:%s table:%s id:%s' % (speed, table, id))
+            utils.log('speed:%s table:%s id:%s' % (speed, table, id))
 
             if table == self.name:
                 if speed > self.timeout:
@@ -90,7 +91,7 @@ class Validator(Spider):
                     self.sql.insert_data(command, msg)
 
     def error_parse(self, failure):
-        self.log('error_parse value:%s' % failure.value)
+        utils.log('error_parse value:%s' % failure.value)
 
         proxy = failure.request.meta.get('proxy_info')
         table = failure.request.meta.get('table')
@@ -105,7 +106,7 @@ class Validator(Spider):
 
             #
             # request = failure.request.meta
-            # self.log('request meta:%s' % str(request))
+            # utils.log('request meta:%s' % str(request))
             #
             # # log all errback failures,
             # # in case you want to do something special for some errors,
@@ -130,6 +131,7 @@ class Validator(Spider):
             #     self.logger.error('TimeoutError on url:%s', request.url)
 
     def save_page(self, filename, data):
-        with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:
-            f.write(data)
-            f.close()
+        if get_project_settings().get('IS_RECODE_HTML', False):
+            with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:
+                f.write(data)
+                f.close()

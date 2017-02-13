@@ -4,6 +4,7 @@ import json
 import logging
 import requests
 import base64
+import utils
 
 from scrapy.http import Request
 from proxy import Proxy
@@ -49,7 +50,7 @@ class PeulandSpider(BaseSpider):
 
     def parse_page(self, response):
 
-        self.log('cookiejar:%s' % response.meta.get('cookiejar'))
+        utils.log('cookiejar:%s' % response.meta.get('cookiejar'))
 
         headers = {
             'Accept': '*/*',

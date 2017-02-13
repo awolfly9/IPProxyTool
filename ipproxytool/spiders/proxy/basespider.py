@@ -1,12 +1,11 @@
 # coding=utf-8
 
 import sys
-
-import datetime
-
 import config
 import utils
+import datetime
 
+from scrapy.utils.project import get_project_settings
 from sqlhelper import SqlHelper
 from scrapy.spiders import Spider
 from scrapy.http import Request
@@ -61,7 +60,8 @@ class BaseSpider(Spider):
         utils.sql_insert_proxy(self.sql, config.free_ipproxy_table, proxy)
 
     def write(self, data):
-        with open('%s/%s.html' % (
-                self.dir_log, datetime.datetime.now().strftime('%Y-%m-%d %H:%m:%s:%f')), 'w') as f:
-            f.write(data)
-            f.close()
+        if get_project_settings().get('IS_RECODE_HTML', False):
+            with open('%s/%s.html' % (self.dir_log, datetime.datetime.now().strftime('%Y-%m-%d %H:%m:%s:%f')),
+                      'w') as f:
+                f.write(data)
+                f.close()

@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
+
 import json
 import time
-
 import config
 import utils
 
@@ -46,7 +46,7 @@ class AssetStoreSpider(Validator):
 
     def get_unity_version(self, response):
         content = json.loads(response.body)
-        self.log('unity content:%s' % response.body)
+        utils.log('unity content:%s' % response.body)
 
         unity_version = content.get('kharma_version', '')
 

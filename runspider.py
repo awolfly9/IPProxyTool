@@ -24,7 +24,8 @@ if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-    utils.make_dir('log')
+    if not os.path.exists('log'):
+        os.makedirs('log')
 
     logging.basicConfig(
             filename = 'log/proxy.log',

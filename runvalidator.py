@@ -22,11 +22,16 @@ if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
+    if not os.path.exists('log'):
+        os.makedirs('log')
+
     logging.basicConfig(
             filename = 'log/validator.log',
             format = '%(levelname)s %(asctime)s: %(message)s',
             level = logging.DEBUG
     )
+
+    utils.make_dir('log')
 
     while True:
         utils.log('----------------validator start...-----------------------')

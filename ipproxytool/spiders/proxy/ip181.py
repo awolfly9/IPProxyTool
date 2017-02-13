@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 
+import utils
+
 from scrapy import Selector
 from basespider import BaseSpider
 from proxy import Proxy
@@ -25,9 +27,9 @@ class IpOneEightOneSpider(BaseSpider):
         self.init()
 
     def parse_page(self, response):
-        self.log(dir(response))
-        self.log('body type:%s' % type(response.body))
-        self.log('body_as_unicode type:%s' % type(response.body_as_unicode))
+        utils.log(dir(response))
+        utils.log('body type:%s' % type(response.body))
+        utils.log('body_as_unicode type:%s' % type(response.body_as_unicode))
         self.write(response.body)
 
         sel = Selector(response)
