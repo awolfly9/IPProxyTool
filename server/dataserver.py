@@ -25,7 +25,7 @@ def run_data_server():
 
 class index(object):
     def GET(self):
-        return "Hello, world!"
+        return "Hello World!"
 
 
 class insert(object):
