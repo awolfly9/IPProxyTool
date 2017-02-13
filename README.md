@@ -146,11 +146,10 @@ http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8
 * 添加检测 ip 的匿名度
 * 添加抓取更多免费代理网站
 * 分布式部署项目
-* 
 
 
-
-
+##参考
+* [IPProxyPool](https://github.com/qiyeboy/IPProxyPool)
 
 
 
