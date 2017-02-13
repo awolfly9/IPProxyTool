@@ -102,18 +102,21 @@ $ python runserver.py
 
 服务器提供接口
 ####获取
-```
 http://127.0.0.1:8000/select?name=douban
-```
-####参数 
 
+参数
 
 | Name | Type | Description |
 | ----| ---- | ---- |
 | name | str | 数据库名称 |
 
+	
+	
+
 ####删除 
 http://127.0.0.1:8000/delete?name=free_ipproxy&ip=27.197.144.181
+
+参数
 
 | Name | Type | Description |
 | ----| ---- | ---- |
@@ -122,6 +125,8 @@ http://127.0.0.1:8000/delete?name=free_ipproxy&ip=27.197.144.181
 
 ####插入
 http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8%AD%E5%9B%BD&anonymity=1&https=yes&speed=5&source=100
+
+参数
 
 | Name | Type | Description | 是否必须|
 | ----| ---- | ---- | ----|
