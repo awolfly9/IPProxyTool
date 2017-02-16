@@ -78,12 +78,18 @@ $ python runspider.py
 ```
 
 ####验证代理 ip 是否有效
-目前验证方式：利用将抓取到的代理 ip 设置成 scrapy 请求的代理，然后去请求目标网站，如果目标网站在合适的时间内成功返回，那么这个则认为这个代理 ip 有效。如果没有在合适的时间返回成功的数据，则认为这个代理 ip 无效。<br>
+目前验证方式：<br>
+1.从上一步抓取并存储的数据库中取出所有的代理 IP <br>
+2.利用取出的代理 IP 去请求 [httpbin](http://httpbin.org/get?show_env=1)<br>
+3.根据请求结果判断出代理 IP 的有效性，是否支持 HTTPS 以及匿名度，并存储到表 httpbin 中<br>
+4.从 httpbin 表中取出代理去访问目标网站，例如 [豆瓣](https://www.douban.com/)<br>
+5.如果请求在合适的时间返回成功的数据，则认为这个代理 IP 有效。并且存入相应的表中<br>
+
 一个目标网站对应一个脚本，所有验证代理 ip 的代码都在 [validator](https://github.com/awolfly9/IPProxyTool/tree/master/ipproxytool/spiders/validator)
 #####扩展验证其他网站
 1.在 validator 目录下新建脚本并继承 Validator <br>
 2.设置 name、timeout、urls、headers <br>
-3.然后调用 init 方法 <br>
+3.然后调用 init 方法,可以参考 [baidu](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/baidu.py) [douban](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/douban.py)<br>
 4.如果需要特别复杂的验证方式，可以参考 [assetstore](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/assetstore.py)<br>
 #####修改runvalidator.py 导入验证库，添加到验证队列
 运行 runvalidator.py 脚本开始抓取代理网站
@@ -142,17 +148,21 @@ http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8
 
 ##TODO
 * 添加服务器获取接口更多筛选条件
-* 添加 https 支持
-* 添加检测 ip 的匿名度
 * 添加抓取更多免费代理网站
 * 分布式部署项目
+* ~~添加 https 支持~~
+* ~~添加检测 ip 的匿名度~~
 
 
 ##参考
 * [IPProxyPool](https://github.com/qiyeboy/IPProxyPool)
 
 
-
+##项目更新
+-----------------------------2017-2-16----------------------------<br> 
+1.验证代理 IP 的匿名度<br>
+2.验证代理 IP HTTPS 支持<br>
+3.添加 httpbin 验证并发数设置，默认为 4
 
 
 
