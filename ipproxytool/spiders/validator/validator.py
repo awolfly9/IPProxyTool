@@ -13,6 +13,7 @@ from sqlhelper import SqlHelper
 
 class Validator(Spider):
     name = 'base'
+    concurrent_requests = 16
 
     def __init__(self, name = None, **kwargs):
         super(Validator, self).__init__(name, **kwargs)
@@ -31,6 +32,10 @@ class Validator(Spider):
 
         command = utils.get_create_table_command(self.name)
         self.sql.create_table(command)
+
+    @classmethod
+    def update_settings(cls, settings):
+        settings.setdict(cls.custom_settings or {'CONCURRENT_REQUESTS': cls.concurrent_requests}, priority = 'spider')
 
     def start_requests(self):
         count = utils.get_table_length(self.sql, self.name)

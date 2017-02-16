@@ -3,20 +3,18 @@
 import json
 import time
 import datetime
-
 import logging
 import requests
-
 import config
 import utils
 
 from scrapy import Request
 from validator import Validator
-from scrapy.utils.project import get_project_settings
 
 
 class HttpBinSpider(Validator):
     name = 'httpbin'
+    concurrent_requests = 4
 
     def __init__(self, name = None, **kwargs):
         super(HttpBinSpider, self).__init__(name, **kwargs)
@@ -36,18 +34,7 @@ class HttpBinSpider(Validator):
 
         self.origin_ip = ''
 
-        # TODO... 更新自定义设置
-        # self.custom_settings = {
-        #     'CONCURRENT_REQUESTS': 4,
-        #     'DOWNLOAD_TIMEOUT': 20
-        # }
-
         self.init()
-
-    # @classmethod
-    # def update_settings(cls, settings):
-    #     settings.setdict(cls.custom_settings or {}, priority = 'spider')
-    #     utils.log('update_settings cls:%s custom_settings:%s' % (cls, cls.custom_settings), logging.ERROR)
 
     def start_requests(self):
         r = requests.get(url = self.urls[0])

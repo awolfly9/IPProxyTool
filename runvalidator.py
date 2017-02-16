@@ -18,7 +18,6 @@ from ipproxytool.spiders.validator.httpbin import HttpBinSpider
 scrapydo.setup()
 
 if __name__ == '__main__':
-
     os.chdir(sys.path[0])
 
     reload(sys)
