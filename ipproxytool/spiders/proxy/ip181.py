@@ -52,7 +52,7 @@ class IpOneEightOneSpider(BaseSpider):
                     country = country,
                     anonymity = anonymity,
                     https = 'no',
-                    speed = 1,
+                    speed = -1,
                     source = self.name,
             )
 

@@ -41,7 +41,7 @@ class KuaiDaiLiSpider(BaseSpider):
                     country = item[4],
                     anonymity = item[2],
                     https = 'no',
-                    speed = 1,
+                    speed = -1,
                     source = self.name,
             )
 

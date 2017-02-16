@@ -43,8 +43,8 @@ class XiCiDaiLiSpider(BaseSpider):
                     port = port,
                     country = country,
                     anonymity = anonymity,
-                    https = 'no',
-                    speed = 1,
+                    https = https,
+                    speed = -1,
                     source = self.name,
             )
 

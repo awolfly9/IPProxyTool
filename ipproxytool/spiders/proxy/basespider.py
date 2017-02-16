@@ -5,7 +5,6 @@ import config
 import utils
 import datetime
 
-from scrapy.utils.project import get_project_settings
 from sqlhelper import SqlHelper
 from scrapy.spiders import Spider
 from scrapy.http import Request

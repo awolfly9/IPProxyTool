@@ -39,7 +39,7 @@ class SixSixIpSpider(BaseSpider):
                         country = item[2],
                         anonymity = item[3],
                         https = 'no',
-                        speed = 1,
+                        speed = -1,
                         source = self.name
                 )
 
