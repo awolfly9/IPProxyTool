@@ -58,6 +58,7 @@ class BaseSpider(Spider):
         pass
 
     def add_proxy(self, proxy):
+        proxy.speed = -1
         utils.sql_insert_proxy(self.sql, config.free_ipproxy_table, proxy)
 
     def write(self, data):
