@@ -64,10 +64,10 @@ class AssetStoreSpider(Validator):
         }
 
         count = utils.get_table_length(self.sql, self.name)
-        count_free = utils.get_table_length(self.sql, config.free_ipproxy_table)
+        count_free = utils.get_table_length(self.sql, config.httpbin_table)
 
         for i in range(0, count + count_free):
-            table = self.name if (i < count) else config.free_ipproxy_table
+            table = self.name if (i < count) else config.httpbin_table
 
             proxy = utils.get_proxy_info(self.sql, table, i)
             if proxy == None:

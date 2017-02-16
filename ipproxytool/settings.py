@@ -14,7 +14,6 @@ BOT_NAME = 'ipproxytool'
 SPIDER_MODULES = ['ipproxytool.spiders']
 NEWSPIDER_MODULE = 'ipproxytool.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'ipproxytool (+http://www.yourdomain.com)'
 
@@ -59,7 +58,7 @@ ROBOTSTXT_OBEY = False
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-   'scrapy.extensions.telnet.TelnetConsole': None,
+    'scrapy.extensions.telnet.TelnetConsole': None,
 }
 
 # Configure item pipelines
@@ -90,5 +89,3 @@ EXTENSIONS = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 RETRY_ENABLED = False
-
-IS_RECODE_HTML = False

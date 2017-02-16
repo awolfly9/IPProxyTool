@@ -3,11 +3,11 @@
 import time
 import datetime
 import utils
+import config
 
 from scrapy import Request
 from scrapy.spiders import Spider
 from scrapy.utils.project import get_project_settings
-from config import free_ipproxy_table
 from sqlhelper import SqlHelper
 
 
@@ -24,6 +24,7 @@ class Validator(Spider):
         self.urls = []
         self.headers = None
         self.success_mark = ''
+        self.is_record_web_page = False
 
     def init(self):
         utils.make_dir(self.dir_log)
@@ -33,10 +34,10 @@ class Validator(Spider):
 
     def start_requests(self):
         count = utils.get_table_length(self.sql, self.name)
-        count_free = utils.get_table_length(self.sql, free_ipproxy_table)
+        count_free = utils.get_table_length(self.sql, config.httpbin_table)
 
         for i in range(0, count + count_free):
-            table = self.name if (i < count) else free_ipproxy_table
+            table = self.name if (i < count) else config.httpbin_table
 
             proxy = utils.get_proxy_info(self.sql, table, i)
             if proxy == None:
@@ -91,7 +92,8 @@ class Validator(Spider):
                     self.sql.insert_data(command, msg)
 
     def error_parse(self, failure):
-        utils.log('error_parse value:%s' % failure.value)
+        request = failure.request
+        utils.log('error_parse value:%s url:%s meta:%s' % (failure.value, request.url, request.meta))
 
         proxy = failure.request.meta.get('proxy_info')
         table = failure.request.meta.get('table')
@@ -131,7 +133,7 @@ class Validator(Spider):
             #     self.logger.error('TimeoutError on url:%s', request.url)
 
     def save_page(self, filename, data):
-        if get_project_settings().get('IS_RECODE_HTML', False):
+        if self.is_record_web_page:
             with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:
                 f.write(data)
                 f.close()

@@ -28,6 +28,8 @@ class BaseSpider(Spider):
 
         self.dir_log = 'log/proxy/%s' % self.name
 
+        self.is_record_web_page = False
+
     def init(self):
         self.meta = {
             'download_timeout': self.timeout,
@@ -60,7 +62,7 @@ class BaseSpider(Spider):
         utils.sql_insert_proxy(self.sql, config.free_ipproxy_table, proxy)
 
     def write(self, data):
-        if get_project_settings().get('IS_RECODE_HTML', False):
+        if self.is_record_web_page:
             with open('%s/%s.html' % (self.dir_log, datetime.datetime.now().strftime('%Y-%m-%d %H:%m:%s:%f')),
                       'w') as f:
                 f.write(data)
