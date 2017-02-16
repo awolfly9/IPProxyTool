@@ -52,8 +52,6 @@ class FreeProxyListsSpider(BaseSpider):
                         port = tbodys[1].text.encode(),
                         country = tbodys[4].text.encode(),
                         anonymity = tbodys[3].text.encode(),
-                        https = 'no',
-                        speed = -1,
                         source = self.name,
                 )
 

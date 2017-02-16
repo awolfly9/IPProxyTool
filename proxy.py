@@ -25,7 +25,7 @@ class Proxy(object):
 
         return str(data)
 
-    def set_value(self, ip, port, country, anonymity, https, speed, source):
+    def set_value(self, ip, port, country, anonymity, source = 'unkonw', https = 'no', speed = -1):
         self.ip = ip
         self.port = port
         self.country = country

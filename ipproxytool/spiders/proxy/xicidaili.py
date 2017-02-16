@@ -35,7 +35,6 @@ class XiCiDaiLiSpider(BaseSpider):
             port = val.xpath('//td[3]/text()').extract_first()
             country = val.xpath('//td[4]/a/text()').extract_first()
             anonymity = val.xpath('//td[5]/text()').extract_first()
-            https = val.xpath('//td[6]/text()').extract_first()
 
             proxy = Proxy()
             proxy.set_value(
@@ -43,8 +42,6 @@ class XiCiDaiLiSpider(BaseSpider):
                     port = port,
                     country = country,
                     anonymity = anonymity,
-                    https = https,
-                    speed = -1,
                     source = self.name,
             )
 

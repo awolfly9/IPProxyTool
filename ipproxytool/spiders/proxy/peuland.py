@@ -126,8 +126,6 @@ class PeulandSpider(BaseSpider):
                         port = port,
                         country = country_zw,
                         anonymity = level_type,
-                        https = https,
-                        speed = -1,
                         source = self.name,
                 )
 

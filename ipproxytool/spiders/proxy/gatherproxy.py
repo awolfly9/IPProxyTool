@@ -49,8 +49,6 @@ class GatherproxySpider(BaseSpider):
                     port = port,
                     country = data.get('PROXY_COUNTRY'),
                     anonymity = data.get('PROXY_TYPE'),
-                    https = 'no',
-                    speed = -1,
                     source = self.name,
             )
 

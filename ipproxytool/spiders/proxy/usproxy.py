@@ -48,8 +48,6 @@ class UsProxySpider(BaseSpider):
                         port = item[1],
                         country = item[3],
                         anonymity = item[4],
-                        https = item[6].lower(),
-                        speed = -1,
                         source = self.name,
                 )
 
