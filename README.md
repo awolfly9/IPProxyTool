@@ -108,7 +108,7 @@ $ python runserver.py
 
 服务器提供接口
 ####获取
-http://127.0.0.1:8000/select?name=douban
+http://127.0.0.1:8000/select?name=free_ipproxy
 
 参数
 
