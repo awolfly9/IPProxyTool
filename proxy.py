@@ -44,11 +44,11 @@ class Proxy(object):
         '''
 
         if anonymity == u'高匿代理' or anonymity == u'高匿名' or anonymity == 'elite proxy' or \
-                        anonymity == u'超级匿名':
+                        anonymity == u'超级匿名' or anonymity == u'High':
             return '1'
-        elif anonymity == u'匿名' or anonymity == 'anonymous' or anonymity == u'普通匿名':
+        elif anonymity == u'匿名' or anonymity == 'anonymous' or anonymity == u'普通匿名' or anonymity == u'Medium':
             return '2'
-        elif anonymity == u'透明' or anonymity == 'transparent':
+        elif anonymity == u'透明' or anonymity == 'transparent' or anonymity == u'No':
             return '3'
         else:
             return '3'
