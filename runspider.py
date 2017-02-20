@@ -15,6 +15,10 @@ from ipproxytool.spiders.proxy.ip181 import IpOneEightOneSpider
 from ipproxytool.spiders.proxy.kuaidaili import KuaiDaiLiSpider
 from ipproxytool.spiders.proxy.gatherproxy import GatherproxySpider
 from ipproxytool.spiders.proxy.hidemy import HidemySpider
+from ipproxytool.spiders.proxy.proxylistplus import ProxylistplusSpider
+from ipproxytool.spiders.proxy.freeproxylists import FreeProxyListsSpider
+from ipproxytool.spiders.proxy.peuland import PeulandSpider
+from ipproxytool.spiders.proxy.usproxy import UsProxySpider
 
 scrapydo.setup()
 
@@ -47,6 +51,10 @@ if __name__ == '__main__':
         items = scrapydo.run_spider(KuaiDaiLiSpider)
         items = scrapydo.run_spider(GatherproxySpider)
         items = scrapydo.run_spider(HidemySpider)
+        items = scrapydo.run_spider(ProxylistplusSpider)
+        items = scrapydo.run_spider(FreeProxyListsSpider)
+        items = scrapydo.run_spider(PeulandSpider)
+        items = scrapydo.run_spider(UsProxySpider)
 
         utils.log('*******************run spider waiting...*******************')
         time.sleep(300)

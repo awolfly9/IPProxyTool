@@ -27,9 +27,6 @@ class IpOneEightOneSpider(BaseSpider):
         self.init()
 
     def parse_page(self, response):
-        utils.log(dir(response))
-        utils.log('body type:%s' % type(response.body))
-        utils.log('body_as_unicode type:%s' % type(response.body_as_unicode))
         self.write(response.body)
 
         sel = Selector(response)

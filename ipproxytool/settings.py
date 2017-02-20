@@ -88,4 +88,4 @@ EXTENSIONS = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-RETRY_ENABLED = False
+# RETRY_ENABLED = False

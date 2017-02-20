@@ -14,6 +14,7 @@ from sqlhelper import SqlHelper
 class Validator(Spider):
     name = 'base'
     concurrent_requests = 16
+    retry_enabled = False
 
     def __init__(self, name = None, **kwargs):
         super(Validator, self).__init__(name, **kwargs)
@@ -35,7 +36,11 @@ class Validator(Spider):
 
     @classmethod
     def update_settings(cls, settings):
-        settings.setdict(cls.custom_settings or {'CONCURRENT_REQUESTS': cls.concurrent_requests}, priority = 'spider')
+        settings.setdict(cls.custom_settings or {
+            'CONCURRENT_REQUESTS': cls.concurrent_requests,
+            'RETRY_ENABLED': cls.retry_enabled
+        },
+                         priority = 'spider')
 
     def start_requests(self):
         count = utils.get_table_length(self.sql, self.name)
