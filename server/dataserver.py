@@ -65,7 +65,24 @@ class select(object):
 
             inputs = web.input()
             name = inputs.get('name')
-            command = "SELECT * FROM {0}".format(name)
+            anonymity = inputs.get('anonymity', None)
+            https = inputs.get('https', None)
+            sort = inputs.get('sort', 'speed')
+            count = inputs.get('count', 100)
+
+            command = ''
+            if anonymity is None and https is None:
+                command = "SELECT * FROM {0} ORDER BY {1} LIMIT {2}".format(name, sort, count)
+            elif anonymity is not None and https is None:
+                command = "SELECT * FROM {0} WHERE anonymity=\'{1}\' ORDER BY {2} LIMIT {3}". \
+                    format(name, anonymity, sort, count)
+            elif anonymity is None and https is not None:
+                command = "SELECT * FROM {0} WHERE https=\'{1}\' ORDER BY {2} LIMIT {3}". \
+                    format(name, https, sort, count)
+            elif anonymity is not None and https is not None:
+                command = "SELECT * FROM {0} WHERE anonymity=\'{1}\' AND https=\'{2}\' ORDER BY {3} limit {4}". \
+                    format(name, anonymity, https, sort, count)
+
             result = sql.query(command)
             data = [{'ip': item[1], 'port': item[2], 'speed': item[6]} for item in result]
             data = json.dumps(data, indent = 4)

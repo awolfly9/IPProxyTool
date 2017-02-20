@@ -11,26 +11,18 @@ python 2.7.12
 * scrapy   
 * BeautifulSoup
 * requests
-* mysql-connector-python
+* mysql-connector-python [安装参考](http://stackoverflow.com/questions/31748278/how-do-you-install-mysql-connector-python-development-version-through-pip) 
 * web.py
 * scrapydo
 * lxml
 
 
-###Mysql 配置	
+
+###安装 Mysql
 
 * 安装 Mysql 并启动
 * 安装 mysql-connector-python [安装参考](http://stackoverflow.com/questions/31748278/how-do-you-install-mysql-connector-python-development-version-through-pip)
-3. 在 config.py 更改数据库配置
-	
-```
-		database_config = {
-    		'host': 'localhost',
-    		'port': 3306,
-    		'user': 'root',
-    		'password': '123456',
-		}
-```
+
 
 ##下载使用
 将项目克隆到本地
@@ -44,6 +36,20 @@ $ git clone https://github.com/awolfly9/IPProxyTool.git
 ```
 $ cd IPProxyTool
 ```
+修改 mysql 数据库配置 [config.py](https://github.com/awolfly9/IPProxyTool/blob/master/config.py) 中 database_config 的用户名和密码为数据库的用户名和密码
+
+```
+$ vim config.py
+---------------
+
+database_config = {
+	'host': 'localhost',
+	'port': 3306,
+	'user': 'root',
+	'password': '123456',
+}
+```
+
 
 分别运行代理抓取、验证、服务器 脚本
 
@@ -98,7 +104,7 @@ $ python runspider.py
 $ python runvalidator.py
 ```
 
-###获取代理 ip 数据服务器
+###获取代理 ip 数据服务器接口
 在 config.py 中修改启动服务器端口配置 data_port，默认为 8000
 启动服务器
 
@@ -108,13 +114,17 @@ $ python runserver.py
 
 服务器提供接口
 ####获取
-http://127.0.0.1:8000/select?name=douban
+http://101.200.55.192:8000/select?name=douban&anonymity=1&https=yes&sort=speed&count=100
 
 参数
 
-| Name | Type | Description |
-| ----| ---- | ---- |
-| name | str | 数据库名称 |
+| Name | Type | Description |是否必须|
+| ----| ---- | ---- | --- |
+| name | str | 数据库名称 | 是 |
+| anonymity | int | 1:高匿 2:匿名 3:透明 | 否 |
+| https | str | https:yes http:no | 否 |
+| sort | str | 排序依据，默认 speed 升序 | 否 |
+| count | int | 获取代理数量，默认 100 | 否 |
 
 	
 	
@@ -124,10 +134,10 @@ http://127.0.0.1:8000/delete?name=free_ipproxy&ip=27.197.144.181
 
 参数
 
-| Name | Type | Description |
-| ----| ---- | ---- |
-| name | str | 数据库名称 |
-| ip | str | 需要删除的 ip |
+| Name | Type | Description | 是否必须|
+| ----| ---- | ---- | --- |
+| name | str | 数据库名称 |  是 |
+| ip | str | 需要删除的 ip | 是 |
 
 ####插入
 http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8%AD%E5%9B%BD&anonymity=1&https=yes&speed=5&source=100
@@ -147,9 +157,9 @@ http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8
 
 
 ##TODO
-* 添加服务器获取接口更多筛选条件
 * 添加抓取更多免费代理网站
 * 分布式部署项目
+* ~~添加服务器获取接口更多筛选条件~~
 * ~~添加 https 支持~~
 * ~~添加检测 ip 的匿名度~~
 
@@ -159,6 +169,10 @@ http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8
 
 
 ##项目更新
+-----------------------------2017-2-20----------------------------<br> 
+1.添加服务器获取接口更多筛选条件<br>
+<br>
+
 -----------------------------2017-2-16----------------------------<br> 
 1.验证代理 IP 的匿名度<br>
 2.验证代理 IP HTTPS 支持<br>
