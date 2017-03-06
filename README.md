@@ -114,7 +114,7 @@ $ python runserver.py
 
 服务器提供接口
 ####获取
-http://101.200.55.192:8000/select?name=douban&anonymity=1&https=yes&sort=speed&count=100
+<http://127.0.0.1:8000/select?name=douban&anonymity=1&https=yes&sort=speed&count=100>
 
 参数
 
@@ -130,7 +130,7 @@ http://101.200.55.192:8000/select?name=douban&anonymity=1&https=yes&sort=speed&c
 	
 
 ####删除 
-http://127.0.0.1:8000/delete?name=free_ipproxy&ip=27.197.144.181
+<http://127.0.0.1:8000/delete?name=free_ipproxy&ip=27.197.144.181>
 
 参数
 
@@ -140,7 +140,7 @@ http://127.0.0.1:8000/delete?name=free_ipproxy&ip=27.197.144.181
 | ip | str | 需要删除的 ip | 是 |
 
 ####插入
-http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8%AD%E5%9B%BD&anonymity=1&https=yes&speed=5&source=100
+<http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8%AD%E5%9B%BD&anonymity=1&https=yes&speed=5&source=100>
 
 参数
 
