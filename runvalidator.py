@@ -39,10 +39,10 @@ if __name__ == '__main__':
     while True:
         utils.log('----validator start time:%s...-' % datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f'))
 
-        # items = scrapydo.run_spider(HttpBinSpider)
-        # utils.log('---validator finish:%s time:%s---' % (
-        #     HttpBinSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
-        # time.sleep(10)
+        items = scrapydo.run_spider(HttpBinSpider)
+        utils.log('---validator finish:%s time:%s---' % (
+            HttpBinSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
+        time.sleep(10)
 
         items = scrapydo.run_spider(BossSpider)
         utils.log('---validator finish:%s time:%s---' % (
@@ -58,17 +58,6 @@ if __name__ == '__main__':
         utils.log('---validator finish:%s time:%s---' % (
             LiepinSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
         time.sleep(10)
-
-        # items = scrapydo.run_spider(DoubanSpider)
-        # utils.log('----------------validator finish:%s time:%s-----------------------' % (
-        #     DoubanSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
-
-        # items = scrapydo.run_spider(SteamSpider)
-        # utils.log('----------------validator finish:%s time:%s-----------------------' % (
-        #     SteamSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
-
-        # items = scrapydo.run_spider(GatherSpider)
-        # items = scrapydo.run_spider(AssetStoreSpider)
 
         utils.log('*************************validator waiting time:%s...*************************' %
                   datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f'))
