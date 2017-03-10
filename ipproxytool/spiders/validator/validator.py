@@ -78,11 +78,12 @@ class Validator(Spider):
         filename = datetime.datetime.now().strftime('%Y-%m-%d %H_%M_%S_%f')
         self.save_page(filename, response.body)
 
-        if response.body.find(self.success_mark) or self.success_mark is '':
+        table = response.meta.get('table')
+        id = response.meta.get('id')
+
+        if self.success_mark in response.body or self.success_mark is '':
             proxy = response.meta.get('proxy_info')
             speed = time.time() - response.meta.get('cur_time')
-            table = response.meta.get('table')
-            id = response.meta.get('id')
 
             utils.log('speed:%s table:%s id:%s' % (speed, table, id))
 
@@ -100,6 +101,11 @@ class Validator(Spider):
                            proxy.get('https'), speed, proxy.get('source'), None)
 
                     self.sql.insert_data(command, msg)
+        else:
+            # 如果没有找到成功标示，说明这里返回信息有误，需要删除当前库的 ip
+            if table == self.name:
+                command = utils.get_delete_data_command(table, id)
+                self.sql.execute(command)
 
     def error_parse(self, failure):
         request = failure.request
