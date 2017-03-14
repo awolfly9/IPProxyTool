@@ -33,7 +33,7 @@ if __name__ == '__main__':
         os.makedirs('log')
 
     logging.basicConfig(
-            filename = 'log/proxy.log',
+            filename = 'log/spider.log',
             format = '%(levelname)s %(asctime)s: %(message)s',
             level = logging.DEBUG
     )
@@ -42,7 +42,8 @@ if __name__ == '__main__':
     while True:
         utils.log('*******************run spider start...*******************')
 
-        command = 'DELETE FROM {0} WHERE save_time < now() - {1}'.format(config.free_ipproxy_table, 1800)
+        command = "DELETE FROM {table} where save_time < SUBDATE(NOW(), INTERVAL 0.5 DAY)".format(
+                table = config.free_ipproxy_table)
         sql.execute(command)
 
         items = scrapydo.run_spider(XiCiDaiLiSpider)
@@ -57,4 +58,4 @@ if __name__ == '__main__':
         items = scrapydo.run_spider(UsProxySpider)
 
         utils.log('*******************run spider waiting...*******************')
-        time.sleep(300)
+        time.sleep(600)

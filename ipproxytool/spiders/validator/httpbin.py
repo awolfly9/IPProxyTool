@@ -68,23 +68,25 @@ class HttpBinSpider(Validator):
                             'id': proxy.get('id'),
                             'https': https,
                             'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
+                            'vali_count': proxy.get('vali_count'),
                         },
                         callback = self.success_parse,
                         errback = self.error_parse,
                 )
 
     def success_parse(self, response):
-        utils.log('name:%s success_parse meta:%s' % (self.name, response.meta))
+        utils.log('success_parse proxy:%s meta:%s' % (str(response.meta.get('proxy_info')), response.meta))
 
+        proxy = response.meta.get('proxy_info')
+        table = response.meta.get('table')
+        id = response.meta.get('id')
+        ip = proxy.get('ip')
         https = response.meta.get('https')
-        filename = '%s_%s' % (response.meta.get('proxy_info').get('ip'), https)
-        self.save_page(filename, response.body)
+
+        self.save_page(ip, response.body)
 
         if response.body.find(self.success_mark) or self.success_mark is '':
-            proxy = response.meta.get('proxy_info')
             speed = time.time() - response.meta.get('cur_time')
-            table = response.meta.get('table')
-            id = response.meta.get('id')
             utils.log('speed:%s table:%s id:%s https:%s' % (speed, table, id, https))
 
             if https == 'no':
@@ -111,19 +113,25 @@ class HttpBinSpider(Validator):
                     else:
                         # command = utils.get_update_data_command(table, id, speed)
                         # self.sql.execute(command)
-                        command = "UPDATE {0} SET speed={1}, https={2}, anonymity={3} WHERE id={4}".format(
-                                self.name, speed, https, anonymity, id)
+                        vali_count = response.meta.get('vali_count', 0) + 1
+                        command = "UPDATE {name} SET speed={speed}, https='{https}', vali_count={vali_count}, " \
+                                  "anonymity={anonymity} WHERE id={id}". \
+                            format(name = self.name, speed = speed, https = https, vali_count = vali_count,
+                                   anonymity = anonymity, id = id)
                         self.sql.execute(command)
                 else:
                     if speed < self.timeout:
                         command = utils.get_insert_data_command(self.name)
                         msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), anonymity,
-                               https, speed, proxy.get('source'), None)
+                               https, speed, proxy.get('source'), None, 1)
 
                         self.sql.insert_data(command, msg)
-            else:
-                command = "UPDATE {0} SET https=\'{1}\' WHERE ip=\'{2}\'".format(self.name, https, proxy.get('ip'))
+            elif https == 'yes':
+                command = "UPDATE {name} SET https=\'{https}\' WHERE ip=\'{ip}\'". \
+                    format(name = self.name, https = https, ip = ip)
                 self.sql.execute(command)
+            else:
+                pass
 
     def error_parse(self, failure):
         request = failure.request

@@ -67,27 +67,34 @@ class select(object):
             name = inputs.get('name')
             anonymity = inputs.get('anonymity', None)
             https = inputs.get('https', None)
-            sort = inputs.get('sort', 'speed')
+            order = inputs.get('order', 'speed')
+            sort = inputs.get('sort', 'asc')
             count = inputs.get('count', 100)
 
             command = ''
             if anonymity is None and https is None:
-                command = "SELECT * FROM {0} ORDER BY {1} LIMIT {2}".format(name, sort, count)
+                command = "SELECT * FROM {name} ORDER BY {order} {sort} LIMIT {count}". \
+                    format(name = name, order = order, sort = sort, count = count)
             elif anonymity is not None and https is None:
-                command = "SELECT * FROM {0} WHERE anonymity=\'{1}\' ORDER BY {2} LIMIT {3}". \
-                    format(name, anonymity, sort, count)
+                command = "SELECT * FROM {name} WHERE anonymity=\'{anonymity}\' ORDER BY {order} {sort} " \
+                          "LIMIT {count}". \
+                    format(name = name, anonymity = anonymity, order = order, sort = sort, count = count)
             elif anonymity is None and https is not None:
-                command = "SELECT * FROM {0} WHERE https=\'{1}\' ORDER BY {2} LIMIT {3}". \
-                    format(name, https, sort, count)
+                command = "SELECT * FROM {name} WHERE https=\'{https}\' ORDER BY {order} {sort} LIMIT {count}". \
+                    format(name = name, https = https, order = order, sort = sort, count = count)
             elif anonymity is not None and https is not None:
-                command = "SELECT * FROM {0} WHERE anonymity=\'{1}\' AND https=\'{2}\' ORDER BY {3} limit {4}". \
-                    format(name, anonymity, https, sort, count)
-
+                command = "SELECT * FROM {name} WHERE anonymity=\'{anonymity}\' AND https=\'{https}\' ORDER BY " \
+                          "{order} {sort} limit {count}". \
+                    format(name = name, anonymity = anonymity, https = https, order = order, sort = sort, count = count)
             result = sql.query(command)
-            data = [{'ip': item[1], 'port': item[2], 'speed': item[6]} for item in result]
+            data = [{
+                        'id': item[0], 'ip': item[1], 'port': item[2], 'anonymity': item[4], 'https': item[5],
+                        'speed': item[6], 'save_time': str(item[8])
+                    } for item in result]
             data = json.dumps(data, indent = 4)
             return data
-        except:
+        except Exception, e:
+            utils.log('select exception msg:%s' % e)
             pass
 
         return []

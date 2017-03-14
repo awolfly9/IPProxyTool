@@ -89,3 +89,5 @@ EXTENSIONS = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # RETRY_ENABLED = False
+
+LOG_ENABLED = True

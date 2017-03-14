@@ -7,7 +7,6 @@ import config
 
 from scrapy import Request
 from scrapy.spiders import Spider
-from scrapy.utils.project import get_project_settings
 from sqlhelper import SqlHelper
 
 
@@ -38,7 +37,7 @@ class Validator(Spider):
     def update_settings(cls, settings):
         settings.setdict(cls.custom_settings or {
             'CONCURRENT_REQUESTS': cls.concurrent_requests,
-            'RETRY_ENABLED': cls.retry_enabled
+            'RETRY_ENABLED': cls.retry_enabled,
         },
                          priority = 'spider')
 
@@ -65,6 +64,7 @@ class Validator(Spider):
                             'table': table,
                             'id': proxy.get('id'),
                             'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
+                            'vali_count': proxy.get('vali_count', 0)
                         },
                         dont_filter = True,
                         callback = self.success_parse,
@@ -72,19 +72,17 @@ class Validator(Spider):
                 )
 
     def success_parse(self, response):
-        utils.log('name:%s success_parse proxy:%s meta:%s' % (
-            self.name, str(response.meta.get('proxy_info')), str(response.meta)))
+        utils.log('success_parse proxy:%s meta:%s' % (str(response.meta.get('proxy_info')), response.meta))
 
-        filename = datetime.datetime.now().strftime('%Y-%m-%d %H_%M_%S_%f')
-        self.save_page(filename, response.body)
-
+        proxy = response.meta.get('proxy_info')
         table = response.meta.get('table')
         id = response.meta.get('id')
+        ip = proxy.get('ip')
+
+        self.save_page(ip, response.body)
 
         if self.success_mark in response.body or self.success_mark is '':
-            proxy = response.meta.get('proxy_info')
             speed = time.time() - response.meta.get('cur_time')
-
             utils.log('speed:%s table:%s id:%s' % (speed, table, id))
 
             if table == self.name:
@@ -92,13 +90,14 @@ class Validator(Spider):
                     command = utils.get_delete_data_command(table, id)
                     self.sql.execute(command)
                 else:
-                    command = utils.get_update_data_command(table, id, speed)
+                    vali_count = response.meta.get('vali_count', 0) + 1
+                    command = utils.get_update_data_command(table, id, speed, vali_count)
                     self.sql.execute(command)
             else:
                 if speed < self.timeout:
                     command = utils.get_insert_data_command(self.name)
                     msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), proxy.get('anonymity'),
-                           proxy.get('https'), speed, proxy.get('source'), None)
+                           proxy.get('https'), speed, proxy.get('source'), None, 1)
 
                     self.sql.insert_data(command, msg)
         else:
@@ -148,7 +147,10 @@ class Validator(Spider):
             #     request = failure.request
             #     self.logger.error('TimeoutError on url:%s', request.url)
 
-    def save_page(self, filename, data):
+    def save_page(self, ip, data):
+        filename = '{time} {ip}'.format(time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'), ip = ip)
+        utils.log('filename:%s' % filename)
+
         if self.is_record_web_page:
             with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:
                 f.write(data)

@@ -62,7 +62,7 @@ class BaseSpider(Spider):
 
     def write(self, data):
         if self.is_record_web_page:
-            with open('%s/%s.html' % (self.dir_log, datetime.datetime.now().strftime('%Y-%m-%d %H:%m:%s:%f')),
+            with open('%s/%s.html' % (self.dir_log, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')),
                       'w') as f:
                 f.write(data)
                 f.close()

@@ -63,6 +63,7 @@ def get_create_table_command(table_name):
         "`speed` FLOAT DEFAULT NULL,"
         "`source` CHAR(20) DEFAULT NULL,"
         "`save_time` TIMESTAMP NOT NULL,"
+        "`vali_count` INT(5) DEFAULT 0,"
         "PRIMARY KEY(id)"
         ") ENGINE=InnoDB".format(table_name))
 
@@ -72,8 +73,8 @@ def get_create_table_command(table_name):
 # 获取插入代理 ip 表的命令
 def get_insert_data_command(table_name):
     command = ("INSERT IGNORE INTO {} "
-               "(id, ip, port, country, anonymity, https, speed, source, save_time)"
-               "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name))
+               "(id, ip, port, country, anonymity, https, speed, source, save_time, vali_count)"
+               "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name))
 
     return command
 
@@ -86,8 +87,10 @@ def get_delete_data_command(table_name, id):
 
 
 # 获取更新指定 id 的命令
-def get_update_data_command(table_name, id, speed):
-    command = ("UPDATE {0} SET speed={1} WHERE id={2}".format(table_name, speed, id))
+def get_update_data_command(table_name, id, speed, vali_count = 0):
+    command = (
+        "UPDATE {table_name} SET speed={speed}, vali_count={vali_count} WHERE id={id}".
+            format(table_name = table_name, speed = speed, id = id, vali_count = vali_count))
 
     return command
 
@@ -119,6 +122,7 @@ def get_proxy_info(sql, table_name, id):
             'speed': result[6],
             'source': result[7],
             'save_time': result[8],
+            'vali_count': result[9],
         }
         return data
     return None
@@ -127,8 +131,18 @@ def get_proxy_info(sql, table_name, id):
 # 插入代理
 def sql_insert_proxy(sql, table_name, proxy):
     command = get_insert_data_command(table_name)
-    msg = (None, proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed, proxy.source, None)
+    msg = (None, proxy.ip, proxy.port, proxy.country, proxy.anonymity, proxy.https, proxy.speed, proxy.source, None,
+           proxy.vali_count)
     sql.insert_data(command, msg)
+
+
+def get_vali_count(sql, table_name, id):
+    command = "SELECT vali_count FROM {0} WHERE id='{1}'".format(table_name, id)
+    res = sql.query_one(command)
+    if res == None:
+        return 0
+    else:
+        return res[0]
 
 
 def make_dir(dir):

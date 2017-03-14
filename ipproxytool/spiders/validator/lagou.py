@@ -1,14 +1,11 @@
 #-*- coding: utf-8 -*-
 
 import time
-
-import datetime
-
 import config
 import utils
 
 from validator import Validator
-from scrapy.http import Request, FormRequest
+from scrapy.http import FormRequest
 
 
 class LagouSpider(Validator):
@@ -33,7 +30,7 @@ class LagouSpider(Validator):
                           'Firefox/50.0',
         }
 
-        self.is_record_web_page = False
+        self.is_record_web_page = True
         self.success_mark = 'success'
         self.init()
 
