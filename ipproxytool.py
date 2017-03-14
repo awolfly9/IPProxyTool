@@ -65,13 +65,14 @@ if __name__ == '__main__':
                 name = process.get('name')
                 utils.log('%(name)s spider finish...\n' % {'name': name})
 
+                process_list.remove(process)
+
                 p = subprocess.Popen(['python', 'runscrapy.py', name], shell = False)
                 data = {
                     'name': name,
                     'popen': p,
                 }
                 process_list.append(data)
-                time.sleep(1)
 
-                process_list.remove(process)
+                time.sleep(1)
                 break

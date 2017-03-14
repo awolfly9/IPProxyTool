@@ -2,6 +2,7 @@
 
 import logging
 import os
+import subprocess
 import sys
 import time
 import scrapydo
@@ -32,34 +33,47 @@ if __name__ == '__main__':
 
     logging.basicConfig(
             filename = 'log/validator.log',
-            format = '%(levelname)s %(asctime)s: %(message)s',
+            format = '%(asctime)s: %(message)s',
             level = logging.DEBUG
     )
 
+    validators = [
+        HttpBinSpider,  # 必须
+        LagouSpider,
+        BossSpider,
+        LiepinSpider,
+    ]
+
+    process_list = []
+    for validator in validators:
+        popen = subprocess.Popen(['python', 'runscrapy.py', validator.name], shell = False)
+        data = {
+            'name': validator.name,
+            'popen': popen,
+        }
+        process_list.append(data)
+
+    utils.log(process_list)
+
     while True:
-        utils.log('----validator start time:%s...-' % datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f'))
-
-        items = scrapydo.run_spider(HttpBinSpider)
-        utils.log('---validator finish:%s time:%s---' % (
-            HttpBinSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
-        time.sleep(10)
-
-        items = scrapydo.run_spider(BossSpider)
-        utils.log('---validator finish:%s time:%s---' % (
-            BossSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
-        time.sleep(10)
-
-        items = scrapydo.run_spider(LagouSpider)
-        utils.log('---validator finish:%s time:%s---' % (
-            LagouSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
-        time.sleep(10)
-
-        items = scrapydo.run_spider(LiepinSpider)
-        utils.log('---validator finish:%s time:%s---' % (
-            LiepinSpider.name, datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f')))
-        time.sleep(10)
-
-        utils.log('*************************validator waiting time:%s...*************************' %
-                  datetime.datetime.now().strftime('%Y:%m:%d %H:%M:%S:%f'))
-
         time.sleep(60)
+        for process in process_list:
+            popen = process.get('popen', None)
+            utils.log('name:%s poll:%s' % (process.get('name'), popen.poll()))
+
+            #  检测结束进程，如果有结束进程，重新开启
+            if popen != None and popen.poll() == 0:
+                name = process.get('name')
+                utils.log('%(name)s spider finish...\n' % {'name': name})
+
+                process_list.remove(process)
+
+                p = subprocess.Popen(['python', 'runscrapy.py', name], shell = False)
+                data = {
+                    'name': name,
+                    'popen': p,
+                }
+                process_list.append(data)
+
+                time.sleep(1)
+                break

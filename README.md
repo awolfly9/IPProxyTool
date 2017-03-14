@@ -51,19 +51,12 @@ database_config = {
 ```
 
 
-分别运行代理抓取、验证、服务器 脚本
+运行启动脚本 ipproxytool.py 也可以分别运行抓取，验证，服务器接口脚本，运行方法参考项目说明
 
 ```
-$ python runspider.py 
+$ python ipproxytool.py
 ```
 
-```
-$ python runvalidator.py 
-```
-
-```
-$ python runserver.py
-```
 
 ##项目说明
 ####抓取代理网站
@@ -77,7 +70,7 @@ $ python runserver.py
 
 #####修改 runspider.py 导入抓取库，添加到抓取队列
 
-运行 runspider.py 脚本开始抓取代理网站
+可以单独运行 runspider.py 脚本开始抓取代理网站
 
 ```
 $ python runspider.py
@@ -98,7 +91,7 @@ $ python runspider.py
 3.然后调用 init 方法,可以参考 [baidu](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/baidu.py) [douban](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/douban.py)<br>
 4.如果需要特别复杂的验证方式，可以参考 [assetstore](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/assetstore.py)<br>
 #####修改runvalidator.py 导入验证库，添加到验证队列
-运行 runvalidator.py 脚本开始抓取代理网站
+可以单独运行 runvalidator.py 开始验证代理ip的有效性
 
 ```
 $ python runvalidator.py
@@ -114,23 +107,24 @@ $ python runserver.py
 
 服务器提供接口
 ####获取
-<http://127.0.0.1:8000/select?name=douban&anonymity=1&https=yes&sort=speed&count=100>
+<http://127.0.0.1:8000/select?name=httpbin&anonymity=1&https=yes&order=id&sort=desc&count=100>
 
 参数
 
-| Name | Type | Description |是否必须|
-| ----| ---- | ---- | --- |
-| name | str | 数据库名称 | 是 |
-| anonymity | int | 1:高匿 2:匿名 3:透明 | 否 |
-| https | str | https:yes http:no | 否 |
-| sort | str | 排序依据，默认 speed 升序 | 否 |
+| Name    | Type   | Description   | must |
+| ----    | ----   | ----          | ---- |
+| name    | str    | 数据库名称      | 是   |
+| anonymity | int  | 1:高匿 2:匿名 3:透明 | 否 |
+| https     | str  | https:yes http:no  | 否 |
+| order     | str  | table 字段  | 否 |
+| sort      | str | asc 升序，desc 降序 | 否 |
 | count | int | 获取代理数量，默认 100 | 否 |
 
 	
 	
 
 ####删除 
-<http://127.0.0.1:8000/delete?name=free_ipproxy&ip=27.197.144.181>
+<http://127.0.0.1:8000/delete?name=httpbin&ip=27.197.144.181>
 
 参数
 
@@ -140,7 +134,7 @@ $ python runserver.py
 | ip | str | 需要删除的 ip | 是 |
 
 ####插入
-<http://127.0.0.1:8000/insert?name=douban&ip=555.22.22.55&port=335&country=%E4%B8%AD%E5%9B%BD&anonymity=1&https=yes&speed=5&source=100>
+<http://127.0.0.1:8000/insert?name=httpbin&ip=555.22.22.55&port=335&country=%E4%B8%AD%E5%9B%BD&anonymity=1&https=yes&speed=5&source=100>
 
 参数
 
@@ -169,6 +163,10 @@ $ python runserver.py
 
 
 ##项目更新
+-----------------------------2017-3-14----------------------------<br> 
+1.更改服务器接口，添加排序方式<br>
+2.添加多进程方式验证代理 ip 的有效性<br>
+<br>
 -----------------------------2017-2-20----------------------------<br> 
 1.添加服务器获取接口更多筛选条件<br>
 <br>
