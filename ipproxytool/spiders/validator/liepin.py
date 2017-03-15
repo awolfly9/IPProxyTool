@@ -5,7 +5,7 @@ from validator import Validator
 
 class LiepinSpider(Validator):
     name = 'liepin'
-    concurrent_requests = 1
+    concurrent_requests = 8
 
     def __init__(self, name = None, **kwargs):
         super(LiepinSpider, self).__init__(name, **kwargs)

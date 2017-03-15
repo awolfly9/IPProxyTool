@@ -10,7 +10,7 @@ from scrapy.http import FormRequest
 
 class LagouSpider(Validator):
     name = 'lagou'
-    concurrent_requests = 1
+    concurrent_requests = 8
 
     def __init__(self, name = None, **kwargs):
         super(LagouSpider, self).__init__(name, **kwargs)
@@ -38,10 +38,14 @@ class LagouSpider(Validator):
         count = utils.get_table_length(self.sql, self.name)
         count_free = utils.get_table_length(self.sql, config.httpbin_table)
 
+        ids = utils.get_table_ids(self.sql, self.name)
+        ids_free = utils.get_table_ids(self.sql, config.httpbin_table)
+
         for i in range(0, count + count_free):
             table = self.name if (i < count) else config.httpbin_table
+            id = ids[i] if i < count else ids_free[i - len(ids)]
 
-            proxy = utils.get_proxy_info(self.sql, table, i)
+            proxy = utils.get_proxy_info(self.sql, table, id)
             if proxy == None:
                 continue
 
@@ -58,6 +62,7 @@ class LagouSpider(Validator):
                             'table': table,
                             'id': proxy.get('id'),
                             'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
+                            'vali_count': proxy.get('vali_count', 0),
                         },
                         cookies = {
                             'Hm_lpvt_4233e74dff0ae5bd0a3d81c6ccf756e6': '1488937030',

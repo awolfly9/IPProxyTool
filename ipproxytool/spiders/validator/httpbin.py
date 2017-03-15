@@ -45,10 +45,14 @@ class HttpBinSpider(Validator):
         count = utils.get_table_length(self.sql, self.name)
         count_free = utils.get_table_length(self.sql, config.free_ipproxy_table)
 
+        ids = utils.get_table_ids(self.sql, self.name)
+        ids_free = utils.get_table_ids(self.sql, config.free_ipproxy_table)
+
         for i in range(0, count + count_free):
             table = self.name if (i < count) else config.free_ipproxy_table
+            id = ids[i] if i < count else ids_free[i - len(ids)]
 
-            proxy = utils.get_proxy_info(self.sql, table, i)
+            proxy = utils.get_proxy_info(self.sql, table, id)
             if proxy == None:
                 continue
 

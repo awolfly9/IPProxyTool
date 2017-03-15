@@ -5,7 +5,7 @@ from validator import Validator
 
 class BossSpider(Validator):
     name = 'boss'
-    concurrent_requests = 1
+    concurrent_requests = 8
 
     def __init__(self, name = None, **kwargs):
         super(BossSpider, self).__init__(name, **kwargs)
