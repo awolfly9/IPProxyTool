@@ -40,7 +40,7 @@ class JDSpider(Validator):
         }
 
         self.success_mark = 'comments'
-        self.is_record_web_page = True
+        # self.is_record_web_page = True
         self.init()
 
     def start_requests(self):

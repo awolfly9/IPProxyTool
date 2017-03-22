@@ -39,9 +39,9 @@ if __name__ == '__main__':
 
     validators = [
         HttpBinSpider,  # 必须
-        LagouSpider,
-        BossSpider,
-        LiepinSpider,
+        # LagouSpider,
+        # BossSpider,
+        # LiepinSpider,
         JDSpider,
     ]
 
