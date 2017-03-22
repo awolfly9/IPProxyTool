@@ -15,6 +15,7 @@ from ipproxytool.spiders.validator.steam import SteamSpider
 from ipproxytool.spiders.validator.boss import BossSpider
 from ipproxytool.spiders.validator.lagou import LagouSpider
 from ipproxytool.spiders.validator.liepin import LiepinSpider
+from ipproxytool.spiders.validator.jd import JDSpider
 
 if __name__ == '__main__':
     # 解决编码问题
@@ -41,6 +42,7 @@ if __name__ == '__main__':
         LagouSpider,
         BossSpider,
         LiepinSpider,
+        JDSpider,
     ]
 
     process_list = []
