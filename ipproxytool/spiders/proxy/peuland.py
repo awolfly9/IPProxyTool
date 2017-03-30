@@ -12,6 +12,7 @@ from utils import log
 from basespider import BaseSpider
 
 
+# 目标站点失效
 class PeulandSpider(BaseSpider):
     name = 'peuland'
 
