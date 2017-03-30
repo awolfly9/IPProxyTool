@@ -1,78 +1,85 @@
 #-*- coding: utf-8 -*-
 
 import logging
-import mysql.connector
 import utils
 import config
+import pymysql
 
-from singleton import Singleton
 
-
-class SqlHelper(Singleton):
+class SqlHelper(object):
     def __init__(self):
-        self.database_name = config.free_ipproxy_database
-        self.init()
+        self.conn = pymysql.connect(**config.database_config)
+        self.cursor = self.conn.cursor()
 
-    def init(self):
-        self.database = mysql.connector.connect(**config.database_config)
-        self.cursor = self.database.cursor()
-
-        self.create_database()
-        self.database.database = self.database_name
+        try:
+            self.conn.select_db(config.database)
+        except:
+            self.create_database()
+            self.conn.select_db(config.database)
 
     def create_database(self):
         try:
-            command = 'CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET \'utf8\' ' % self.database_name
+            command = 'CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET \'utf8\' ' % config.database
             utils.log('sql helper create_database command:%s' % command)
             self.cursor.execute(command)
+            self.conn.commit()
         except Exception, e:
             utils.log('SqlHelper create_database exception:%s' % str(e), logging.WARNING)
 
     def create_table(self, command):
         try:
             utils.log('sql helper create_table command:%s' % command)
-            self.cursor.execute(command)
-            self.database.commit()
+            x = self.cursor.execute(command)
+            self.conn.commit()
+            return x
         except Exception, e:
             utils.log('sql helper create_table exception:%s' % str(e), logging.WARNING)
 
-    def insert_data(self, command, data):
+    def insert_data(self, command, data, commit = False):
         try:
-            utils.log('insert_data command:%s, data:%s' % (command, data))
-
-            self.cursor.execute(command, data)
-            self.database.commit()
+            utils.log('sql helper insert_data command:%s, data:%s' % (command, data))
+            x = self.cursor.execute(command, data)
+            if commit:
+                self.conn.commit()
+            return x
         except Exception, e:
             utils.log('sql helper insert_data exception msg:%s' % str(e), logging.WARNING)
 
-    def execute(self, command):
+    def commit(self):
+        self.conn.commit()
+
+    def execute(self, command, commit = True):
         try:
             utils.log('sql helper execute command:%s' % command)
             data = self.cursor.execute(command)
-            self.database.commit()
+            if commit:
+                self.conn.commit()
             return data
         except Exception, e:
             utils.log('sql helper execute exception msg:%s' % str(e))
             return None
 
-    def query(self, command):
+    def query(self, command, commit = False):
         try:
             utils.log('sql helper execute command:%s' % command)
 
             self.cursor.execute(command)
             data = self.cursor.fetchall()
-
+            if commit:
+                self.conn.commit()
             return data
         except Exception, e:
             utils.log('sql helper execute exception msg:%s' % str(e))
             return None
 
-    def query_one(self, command):
+    def query_one(self, command, commit = False):
         try:
             utils.log('sql helper execute command:%s' % command)
 
             self.cursor.execute(command)
             data = self.cursor.fetchone()
+            if commit:
+                self.conn.commit()
 
             return data
         except Exception, e:
