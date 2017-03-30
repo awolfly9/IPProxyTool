@@ -23,7 +23,6 @@ from ipproxytool.spiders.proxy.usproxy import UsProxySpider
 scrapydo.setup()
 
 if __name__ == '__main__':
-
     os.chdir(sys.path[0])
 
     reload(sys)
@@ -37,7 +36,22 @@ if __name__ == '__main__':
             format = '%(levelname)s %(asctime)s: %(message)s',
             level = logging.DEBUG
     )
+
     sql = SqlHelper()
+    sql.init()
+
+    spiders = [
+        XiCiDaiLiSpider,
+        SixSixIpSpider,
+        IpOneEightOneSpider,
+        # KuaiDaiLiSpider,  # 在访问前加了一个 js ，反爬
+        GatherproxySpider,
+        HidemySpider,
+        ProxylistplusSpider,
+        FreeProxyListsSpider,
+        # PeulandSpider,  # 目标站点失效
+        UsProxySpider,
+    ]
 
     while True:
         utils.log('*******************run spider start...*******************')
@@ -46,16 +60,8 @@ if __name__ == '__main__':
                 table = config.free_ipproxy_table)
         sql.execute(command)
 
-        items = scrapydo.run_spider(XiCiDaiLiSpider)
-        items = scrapydo.run_spider(SixSixIpSpider)
-        items = scrapydo.run_spider(IpOneEightOneSpider)
-        items = scrapydo.run_spider(KuaiDaiLiSpider)
-        items = scrapydo.run_spider(GatherproxySpider)
-        items = scrapydo.run_spider(HidemySpider)
-        items = scrapydo.run_spider(ProxylistplusSpider)
-        items = scrapydo.run_spider(FreeProxyListsSpider)
-        items = scrapydo.run_spider(PeulandSpider)
-        items = scrapydo.run_spider(UsProxySpider)
+        for spider in spiders:
+            scrapydo.run_spider(spider)
 
         utils.log('*******************run spider waiting...*******************')
         time.sleep(600)
