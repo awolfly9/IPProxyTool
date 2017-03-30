@@ -1,14 +1,17 @@
 # IPProxyTool
 使用 scrapy 爬虫抓取代理网站，获取大量的免费代理 ip。过滤出所有可用的 ip，存入数据库以备使用。
+可以访问我的个人站点，查看我的更多有趣项目 [awolfly9](http://awolfly9.com/)
 
-####个人项目欢迎加微信吐槽
+#### 个人项目欢迎加微信吐槽
 ![](weixin.png)
+<br>
+**如果在使用中有任何疑问，或者项目中有任何槽点你觉得不满意都可以加我微信向我吐槽。不吐不快~**
 
-##运行环境
+## 运行环境
 python 2.7.12
 
-###运行依赖包
-* scrapy   
+### 运行依赖包
+* scrapy
 * BeautifulSoup
 * requests
 * mysql-connector-python [安装参考](http://stackoverflow.com/questions/31748278/how-do-you-install-mysql-connector-python-development-version-through-pip) 
@@ -18,13 +21,13 @@ python 2.7.12
 
 
 
-###安装 Mysql
+### 安装 Mysql
 
 * 安装 Mysql 并启动
 * 安装 mysql-connector-python [安装参考](http://stackoverflow.com/questions/31748278/how-do-you-install-mysql-connector-python-development-version-through-pip)
 
 
-##下载使用
+## 下载使用
 将项目克隆到本地
 
 ```
@@ -57,18 +60,20 @@ database_config = {
 $ python ipproxytool.py
 ```
 
+**如果更新后运行报错，请先删除本地数据库。**
+<br>
 
-##项目说明
-####抓取代理网站
+## 项目说明
+#### 抓取代理网站
 所有抓取代理网站的代码都在 [proxy](https://github.com/awolfly9/IPProxyTool/tree/master/ipproxytool/spiders/proxy)<br/>
-#####扩展抓取其他的代理网站
+##### 扩展抓取其他的代理网站
 1.在 proxy 目录下新建脚本并继承自 BaseSpider <br/>
 2.设置 name、urls、headers<br/>
 3.重写 parse_page 方法，提取代理数据<br/>
 4.将数据存入数据库 具体可以参考 [ip181](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/proxy/ip181.py)                 [kuaidaili](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/proxy/kuaidaili.py)<br/>
 5.如果需要抓取特别复杂的代理网站，可以参考[peuland](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/proxy/peuland.py)<br/>
 
-#####修改 runspider.py 导入抓取库，添加到抓取队列
+##### 修改 runspider.py 导入抓取库，添加到抓取队列
 
 可以单独运行 runspider.py 脚本开始抓取代理网站
 
@@ -76,7 +81,7 @@ $ python ipproxytool.py
 $ python runspider.py
 ```
 
-####验证代理 ip 是否有效
+#### 验证代理 ip 是否有效
 目前验证方式：<br>
 1.从上一步抓取并存储的数据库中取出所有的代理 IP <br>
 2.利用取出的代理 IP 去请求 [httpbin](http://httpbin.org/get?show_env=1)<br>
@@ -85,19 +90,19 @@ $ python runspider.py
 5.如果请求在合适的时间返回成功的数据，则认为这个代理 IP 有效。并且存入相应的表中<br>
 
 一个目标网站对应一个脚本，所有验证代理 ip 的代码都在 [validator](https://github.com/awolfly9/IPProxyTool/tree/master/ipproxytool/spiders/validator)
-#####扩展验证其他网站
+##### 扩展验证其他网站
 1.在 validator 目录下新建脚本并继承 Validator <br>
 2.设置 name、timeout、urls、headers <br>
 3.然后调用 init 方法,可以参考 [baidu](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/baidu.py) [douban](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/douban.py)<br>
 4.如果需要特别复杂的验证方式，可以参考 [assetstore](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/assetstore.py)<br>
-#####修改runvalidator.py 导入验证库，添加到验证队列
+##### 修改runvalidator.py 导入验证库，添加到验证队列
 可以单独运行 runvalidator.py 开始验证代理ip的有效性
 
 ```
 $ python runvalidator.py
 ```
 
-###获取代理 ip 数据服务器接口
+### 获取代理 ip 数据服务器接口
 在 config.py 中修改启动服务器端口配置 data_port，默认为 8000
 启动服务器
 
@@ -106,7 +111,7 @@ $ python runserver.py
 ```
 
 服务器提供接口
-####获取
+#### 获取
 <http://127.0.0.1:8000/select?name=httpbin&anonymity=1&https=yes&order=id&sort=desc&count=100>
 
 参数
@@ -123,7 +128,7 @@ $ python runserver.py
 	
 	
 
-####删除 
+#### 删除 
 <http://127.0.0.1:8000/delete?name=httpbin&ip=27.197.144.181>
 
 参数
@@ -133,7 +138,7 @@ $ python runserver.py
 | name | str | 数据库名称 |  是 |
 | ip | str | 需要删除的 ip | 是 |
 
-####插入
+#### 插入
 <http://127.0.0.1:8000/insert?name=httpbin&ip=555.22.22.55&port=335&country=%E4%B8%AD%E5%9B%BD&anonymity=1&https=yes&speed=5&source=100>
 
 参数
@@ -150,19 +155,32 @@ $ python runserver.py
 | source | str | ip 来源 |否|
 
 
-##TODO
-* 添加抓取更多免费代理网站
+## TODO
+* 添加抓取更多免费代理网站，目前支持的抓取的免费代理 IP 站点，目前有一些国外的站点连接不稳定
+  * (国外) <http://www.freeproxylists.net/>
+  * (国外) <http://gatherproxy.com/>
+  * (国内) <https://hidemy.name/en/proxy-list/>
+  * (国内) <http://www.ip181.com/>
+  * (国内) <http://www.kuaidaili.com/>
+  * (国外) <https://proxy.peuland.com/proxy_list_by_category.htm>
+  * (国外) <https://list.proxylistplus.com/>
+  * (国内) <http://m.66ip.cn>
+  * (国外) <http://www.us-proxy.org/>
+  * (国内) <http://www.xicidaili.com>
 * 分布式部署项目
 * ~~添加服务器获取接口更多筛选条件~~
+* ~~多进程验证代理 IP~~
 * ~~添加 https 支持~~
 * ~~添加检测 ip 的匿名度~~
 
 
-##参考
+## 参考
 * [IPProxyPool](https://github.com/qiyeboy/IPProxyPool)
 
 
-##项目更新
+## 项目更新
+-----------------------------2017-3-30----------------------------<br> 
+1.修改完善 readme<br>
 -----------------------------2017-3-14----------------------------<br> 
 1.更改服务器接口，添加排序方式<br>
 2.添加多进程方式验证代理 ip 的有效性<br>
