@@ -14,17 +14,18 @@ python 2.7.12
 * scrapy
 * BeautifulSoup
 * requests
-* mysql-connector-python [安装参考](http://stackoverflow.com/questions/31748278/how-do-you-install-mysql-connector-python-development-version-through-pip) 
+* pymysql
 * web.py
 * scrapydo
 * lxml
+* 安装 mysql 并启动
 
+安装命令：
 
+```
+$ pip install Scrapy BeautifulSoup requests pymysql web.py scrapydo lxml
+```
 
-### 安装 Mysql
-
-* 安装 Mysql 并启动
-* 安装 mysql-connector-python [安装参考](http://stackoverflow.com/questions/31748278/how-do-you-install-mysql-connector-python-development-version-through-pip)
 
 
 ## 下载使用
@@ -50,6 +51,7 @@ database_config = {
 	'port': 3306,
 	'user': 'root',
 	'password': '123456',
+	'charset': 'utf8',
 }
 ```
 
@@ -181,6 +183,7 @@ $ python runserver.py
 ## 项目更新
 -----------------------------2017-3-30----------------------------<br> 
 1.修改完善 readme<br>
+2.数据插入支持事务<br>
 -----------------------------2017-3-14----------------------------<br> 
 1.更改服务器接口，添加排序方式<br>
 2.添加多进程方式验证代理 ip 的有效性<br>
