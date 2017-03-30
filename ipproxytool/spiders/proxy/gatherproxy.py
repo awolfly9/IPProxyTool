@@ -16,7 +16,7 @@ class GatherproxySpider(BaseSpider):
         super(GatherproxySpider, self).__init__(*a, **kwargs)
         self.urls = [
             'http://gatherproxy.com/',
-            'http://gatherproxy.com/proxylist/anonymity/?t=Anonymous',
+            'http://www.gatherproxy.com/proxylist/anonymity/?t=Anonymous',
             'http://gatherproxy.com/proxylist/country/?c=China',
         ]
 
@@ -25,13 +25,12 @@ class GatherproxySpider(BaseSpider):
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'en-US,en;q=0.5',
             'Connection': 'keep-alive',
-            'Host': 'gatherproxy.com',
+            'Host': 'www.gatherproxy.com',
             'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 '
-                          'Firefox/50.0',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:52.0) Gecko/20100101 Firefox/52.0'
         }
 
-        self.proxies = self.get_proxy()
+        # self.proxies = self.get_proxy()
         self.init()
 
     def parse_page(self, response):
