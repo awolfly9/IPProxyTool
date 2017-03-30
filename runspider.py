@@ -38,7 +38,6 @@ if __name__ == '__main__':
     )
 
     sql = SqlHelper()
-    sql.init()
 
     spiders = [
         XiCiDaiLiSpider,

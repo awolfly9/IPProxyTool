@@ -32,7 +32,6 @@ class insert(object):
     def GET(self):
         try:
             sql = SqlHelper()
-
             inputs = web.input()
             name = inputs.get('name')
 
@@ -62,7 +61,6 @@ class select(object):
     def GET(self):
         try:
             sql = SqlHelper()
-
             inputs = web.input()
             name = inputs.get('name')
             anonymity = inputs.get('anonymity', None)
@@ -88,9 +86,10 @@ class select(object):
                     format(name = name, anonymity = anonymity, https = https, order = order, sort = sort, count = count)
             result = sql.query(command)
             data = [{
-                        'id': item[0], 'ip': item[1], 'port': item[2], 'anonymity': item[4], 'https': item[5],
-                        'speed': item[6], 'save_time': str(item[8])
-                    } for item in result]
+                'id': item[0], 'ip': item[1], 'port': item[2], 'anonymity': item[4], 'https': item[5],
+                'speed': item[6], 'save_time': str(item[8])
+            } for item in result]
+
             data = json.dumps(data, indent = 4)
             return data
         except Exception, e:
@@ -104,7 +103,6 @@ class delete(object):
     def GET(self):
         try:
             sql = SqlHelper()
-
             inputs = web.input()
             name = inputs.get('name')
             ip = inputs.get('ip')

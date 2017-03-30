@@ -66,3 +66,6 @@ class BaseSpider(Spider):
                       'w') as f:
                 f.write(data)
                 f.close()
+
+    def close(spider, reason):
+        spider.sql.commit()

@@ -129,7 +129,7 @@ class HttpBinSpider(Validator):
                         msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), anonymity,
                                https, speed, proxy.get('source'), None, 1)
 
-                        self.sql.insert_data(command, msg)
+                        self.sql.insert_data(command, msg, commit = True)
             elif https == 'yes':
                 command = "UPDATE {name} SET https=\'{https}\' WHERE ip=\'{ip}\'". \
                     format(name = self.name, https = https, ip = ip)

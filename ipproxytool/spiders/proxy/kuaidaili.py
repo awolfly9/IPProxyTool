@@ -2,6 +2,7 @@
 
 import re
 
+import utils
 from proxy import Proxy
 from basespider import BaseSpider
 
@@ -13,6 +14,7 @@ class KuaiDaiLiSpider(BaseSpider):
         super(KuaiDaiLiSpider, self).__init__(*a, **kwargs)
 
         self.urls = ['http://www.kuaidaili.com/free/inha/%s/' % i for i in range(1, 2)]
+        self.urls = ['http://www.kuaidaili.com/free/inha/%s/' % i for i in range(1, 2)]
 
         self.headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -22,11 +24,14 @@ class KuaiDaiLiSpider(BaseSpider):
             'Host': 'www.kuaidaili.com',
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:50.0) Gecko/20100101 Firefox/50.0',
+            'Referer': 'http://www.kuaidaili.com/free/inha/1/',
         }
 
+        self.is_record_web_page = True
         self.init()
 
     def parse_page(self, response):
+        utils.log('parse_page')
         pattern = re.compile(
                 '<tr>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>('
                 '.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?</tr>',
