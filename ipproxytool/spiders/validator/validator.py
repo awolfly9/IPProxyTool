@@ -103,7 +103,7 @@ class Validator(Spider):
                     msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), proxy.get('anonymity'),
                            proxy.get('https'), speed, proxy.get('source'), None, 1)
 
-                    self.sql.insert_data(command, msg)
+                    self.sql.insert_data(command, msg, commit = True)
         else:
             # 如果没有找到成功标示，说明这里返回信息有误，需要删除当前库的 ip
             if table == self.name:
@@ -159,3 +159,6 @@ class Validator(Spider):
             with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:
                 f.write(data)
                 f.close()
+
+    def close(spider, reason):
+        spider.sql.commit()
