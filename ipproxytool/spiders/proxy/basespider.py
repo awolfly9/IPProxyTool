@@ -51,6 +51,7 @@ class BaseSpider(Spider):
             )
 
     def parse_page(self, response):
+        self.write(response.body)
         pass
 
     def error_parse(self, failure):
