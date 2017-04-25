@@ -20,13 +20,16 @@ class JDSpider(Validator):
             'https://item.jd.com/11478178241.html',
             'https://item.jd.com/4142680.html',
             'https://item.jd.com/3133859.html',
-            'https://item.jd.com/1594371260.html',
-            'https://item.jd.com/1746190049.html',
             'https://item.jd.com/11349957411.html',
             'https://item.jd.com/1231104.html',
             'https://item.jd.com/11290644320.html',
-            'http://item.jd.com/1786149566.html',
-            'https://item.jd.com/10011422267.html',
+            'https://item.jd.com/3553539.html',
+            'https://item.jd.com/3553567.html',
+            'https://item.jd.com/4640524.html',
+            'https://item.jd.com/3652063.html',
+            'https://item.jd.com/2967929.html',
+            'https://item.jd.com/3367822.html',
+            'https://item.jd.com/1217500.html',
         ]
 
         self.headers = {

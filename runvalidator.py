@@ -19,6 +19,7 @@ from ipproxytool.spiders.validator.steam import SteamSpider
 from ipproxytool.spiders.validator.boss import BossSpider
 from ipproxytool.spiders.validator.lagou import LagouSpider
 from ipproxytool.spiders.validator.liepin import LiepinSpider
+from ipproxytool.spiders.validator.jd import JDSpider
 
 scrapydo.setup()
 
@@ -39,9 +40,10 @@ if __name__ == '__main__':
 
     validators = [
         HttpBinSpider,  # 必须
-        LagouSpider,
-        BossSpider,
-        LiepinSpider,
+        # LagouSpider,
+        # BossSpider,
+        # LiepinSpider,
+        JDSpider,
     ]
 
     process_list = []
