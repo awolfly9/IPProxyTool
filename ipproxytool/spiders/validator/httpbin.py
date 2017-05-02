@@ -14,7 +14,7 @@ from validator import Validator
 
 class HttpBinSpider(Validator):
     name = 'httpbin'
-    concurrent_requests = 4
+    concurrent_requests = 16
 
     def __init__(self, name = None, **kwargs):
         super(HttpBinSpider, self).__init__(name, **kwargs)
@@ -36,12 +36,15 @@ class HttpBinSpider(Validator):
 
         self.init()
 
-    def start_requests(self):
+    def init(self):
+        super(HttpBinSpider, self).init()
+
         r = requests.get(url = self.urls[0])
         data = json.loads(r.text)
         self.origin_ip = data.get('origin', '')
         utils.log('origin ip:%s' % self.origin_ip)
 
+    def start_requests(self):
         count = utils.get_table_length(self.sql, self.name)
         count_free = utils.get_table_length(self.sql, config.free_ipproxy_table)
 
@@ -119,9 +122,9 @@ class HttpBinSpider(Validator):
                         # self.sql.execute(command)
                         vali_count = response.meta.get('vali_count', 0) + 1
                         command = "UPDATE {name} SET speed={speed}, https='{https}', vali_count={vali_count}, " \
-                                  "anonymity={anonymity} WHERE id={id}". \
+                                  "anonymity={anonymity}, save_time={save_time} WHERE id={id}". \
                             format(name = self.name, speed = speed, https = https, vali_count = vali_count,
-                                   anonymity = anonymity, id = id)
+                                   anonymity = anonymity, id = id, save_time = 'NOW()')
                         self.sql.execute(command)
                 else:
                     if speed < self.timeout:
