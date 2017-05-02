@@ -76,7 +76,7 @@ class Validator(Spider):
                 )
 
     def success_parse(self, response):
-        utils.log('success_parse proxy:%s meta:%s' % (str(response.meta.get('proxy_info')), response.meta))
+        utils.log('success_parse speed:%s meta:%s' % (time.time() - response.meta.get('cur_time'), response.meta))
 
         proxy = response.meta.get('proxy_info')
         table = response.meta.get('table')
@@ -87,8 +87,6 @@ class Validator(Spider):
 
         if self.success_mark in response.body or self.success_mark is '':
             speed = time.time() - response.meta.get('cur_time')
-            utils.log('speed:%s table:%s id:%s' % (speed, table, id))
-
             if table == self.name:
                 if speed > self.timeout:
                     command = utils.get_delete_data_command(table, id)

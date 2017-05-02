@@ -87,7 +87,7 @@ class JDSpider(Validator):
 
     def get_comment_count(self, response):
         name = response.xpath('//img[@id="spec-img"]/@alt').extract_first()
-        self.log('name:%s' % name)
+        self.log('name:%s time:%s' % (name, time.time() - response.meta.get('cur_time')))
 
         pattern = re.compile('commentVersion:\'(\d+)\'', re.S)
         comment_version = re.search(pattern, response.body).group(1)
