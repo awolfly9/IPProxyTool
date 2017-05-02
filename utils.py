@@ -89,8 +89,9 @@ def get_delete_data_command(table_name, id):
 # 获取更新指定 id 的命令
 def get_update_data_command(table_name, id, speed, vali_count = 0):
     command = (
-        "UPDATE {table_name} SET speed={speed}, vali_count={vali_count} WHERE id={id}".
-            format(table_name = table_name, speed = speed, id = id, vali_count = vali_count))
+        "UPDATE {table_name} SET speed={speed}, vali_count={vali_count}, save_time={save_time} WHERE id={id}".
+            format(table_name = table_name, speed = speed, id = id, vali_count = vali_count,
+                   save_time = 'NOW()'))
 
     return command
 

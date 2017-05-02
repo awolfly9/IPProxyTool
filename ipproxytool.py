@@ -43,7 +43,7 @@ if __name__ == '__main__':
         # BossSpider,
         # LiepinSpider,
         JDSpider,
-        DoubanSpider,
+        # DoubanSpider,
     ]
 
     process_list = []

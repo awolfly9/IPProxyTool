@@ -59,7 +59,7 @@ if __name__ == '__main__':
     while True:
         utils.log('*******************run spider start...*******************')
 
-        command = "DELETE FROM {table} where save_time < SUBDATE(NOW(), INTERVAL 0.5 DAY)".format(
+        command = "DELETE FROM {table} where save_time < SUBDATE(NOW(), INTERVAL 0.2 DAY)".format(
                 table = config.free_ipproxy_table)
         sql.execute(command)
 
@@ -67,4 +67,4 @@ if __name__ == '__main__':
             scrapydo.run_spider(spider)
 
         utils.log('*******************run spider waiting...*******************')
-        time.sleep(600)
+        time.sleep(1200)
