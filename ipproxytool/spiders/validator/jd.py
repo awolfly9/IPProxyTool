@@ -66,6 +66,7 @@ class JDSpider(Validator):
             product_id = re.search(pattern, url).group()
 
             cur_time = time.time()
+            self.log('start_request cur_time:%s' % cur_time)
             yield Request(
                     url = url,
                     headers = self.headers,
@@ -116,7 +117,7 @@ class JDSpider(Validator):
                     'cur_time': cur_time,
                     'download_timeout': self.timeout,
                     'proxy_info': response.meta.get('proxy_info'),
-                    'table': response.meta.get('proxy_info'),
+                    'table': response.meta.get('table'),
                     'id': response.meta.get('id'),
                     'vali_count': response.meta.get('vali_count', 0),
                 },
