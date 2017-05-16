@@ -2,10 +2,10 @@
 
 # local
 database_config = {
-    'host': 'localhost',
-    'port': 3306,
+    'host': '52.163.48.238',
+    'port': 10101,
     'user': 'root',
-    'password': '123456',
+    'password': 'root',
     'charset': 'utf8',
 }
 

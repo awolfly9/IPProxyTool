@@ -1,0 +1,7 @@
+beautifulsoup4
+sqlalchemy
+pymysql
+requests
+web.py 
+scrapydo 
+lxml
