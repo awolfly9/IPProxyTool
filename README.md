@@ -2,10 +2,7 @@
 使用 scrapy 爬虫抓取代理网站，获取大量的免费代理 ip。过滤出所有可用的 ip，存入数据库以备使用。
 可以访问我的个人站点，查看我的更多有趣项目 [awolfly9](http://awolfly9.com/)
 
-#### 个人项目欢迎加微信吐槽
-![](weixin.png)
-<br>
-**如果在使用中有任何疑问，或者项目中有任何槽点你觉得不满意都可以加我微信向我吐槽。不吐不快~**
+感谢 [youngjeff](https://github.com/youngjeff) 和我一起维护该项目
 
 ## 运行环境
 python 2.7.12
@@ -62,7 +59,6 @@ database_config = {
 $ python ipproxytool.py
 ```
 
-**如果更新后运行报错，请先删除本地数据库。**
 <br>
 
 ## 项目说明
@@ -75,12 +71,12 @@ $ python ipproxytool.py
 4.将数据存入数据库 具体可以参考 [ip181](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/proxy/ip181.py)                 [kuaidaili](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/proxy/kuaidaili.py)<br/>
 5.如果需要抓取特别复杂的代理网站，可以参考[peuland](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/proxy/peuland.py)<br/>
 
-##### 修改 runspider.py 导入抓取库，添加到抓取队列
+##### 修改 run_crawl_proxy.py 导入抓取库，添加到抓取队列
 
-可以单独运行 runspider.py 脚本开始抓取代理网站
+可以单独运行 run_crawl_proxy.py 脚本开始抓取代理网站
 
 ```
-$ python runspider.py
+$ python run_crawl_proxy.py
 ```
 
 #### 验证代理 ip 是否有效
@@ -97,11 +93,11 @@ $ python runspider.py
 2.设置 name、timeout、urls、headers <br>
 3.然后调用 init 方法,可以参考 [baidu](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/baidu.py) [douban](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/douban.py)<br>
 4.如果需要特别复杂的验证方式，可以参考 [assetstore](https://github.com/awolfly9/IPProxyTool/blob/master/ipproxytool/spiders/validator/assetstore.py)<br>
-##### 修改runvalidator.py 导入验证库，添加到验证队列
-可以单独运行 runvalidator.py 开始验证代理ip的有效性
+##### 修改 run_validator.py 导入验证库，添加到验证队列
+可以单独运行 run_validator.py 开始验证代理ip的有效性
 
 ```
-$ python runvalidator.py
+$ python run_validator.py
 ```
 
 ### 获取代理 ip 数据服务器接口
@@ -109,7 +105,7 @@ $ python runvalidator.py
 启动服务器
 
 ```
-$ python runserver.py
+$ python run_server.py
 ```
 
 服务器提供接口
@@ -158,6 +154,10 @@ $ python runserver.py
 
 
 ## TODO
+* 添加多数据库支持
+  * mysql
+  * redis TODO...
+  * sqite TODO...
 * 添加抓取更多免费代理网站，目前支持的抓取的免费代理 IP 站点，目前有一些国外的站点连接不稳定
   * (国外) <http://www.freeproxylists.net/>
   * (国外) <http://gatherproxy.com/>
