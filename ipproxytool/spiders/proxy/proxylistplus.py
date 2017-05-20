@@ -1,7 +1,5 @@
 #-*- coding: utf-8 -*-
 
-import utils
-
 from scrapy import Selector
 from basespider import BaseSpider
 from proxy import Proxy
@@ -35,11 +33,8 @@ class ProxylistplusSpider(BaseSpider):
         self.write(response.body)
 
         sel = Selector(response)
-        infos = sel.xpath('//table[@class="bg"]/tr').extract()
+        infos = sel.xpath('//tr[@class="cells"]').extract()
         for i, info in enumerate(infos):
-            if i == 0:
-                continue
-
             val = Selector(text = info)
             ip = val.xpath('//td[2]/text()').extract_first()
             port = val.xpath('//td[3]/text()').extract_first()

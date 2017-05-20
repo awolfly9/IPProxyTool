@@ -35,17 +35,17 @@ class LagouSpider(Validator):
         self.init()
 
     def start_requests(self):
-        count = utils.get_table_length(self.sql, self.name)
-        count_free = utils.get_table_length(self.sql, config.httpbin_table)
+        count = self.sql.get_proxy_count(self.name)
+        count_httpbin = self.sql.get_proxy_count(config.httpbin_table)
 
-        ids = utils.get_table_ids(self.sql, self.name)
-        ids_free = utils.get_table_ids(self.sql, config.httpbin_table)
+        ids = self.sql.get_proxy_ids(self.name)
+        ids_httpbin = self.sql.get_proxy_ids(config.httpbin_table)
 
-        for i in range(0, count + count_free):
+        for i in range(0, count + count_httpbin):
             table = self.name if (i < count) else config.httpbin_table
-            id = ids[i] if i < count else ids_free[i - len(ids)]
+            id = ids[i] if i < count else ids_httpbin[i - len(ids)]
 
-            proxy = utils.get_proxy_info(self.sql, table, id)
+            proxy = self.sql.get_proxy_with_id(table, id)
             if proxy == None:
                 continue
 

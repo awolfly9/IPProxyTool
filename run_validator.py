@@ -7,10 +7,7 @@ import sys
 import time
 import scrapydo
 import utils
-import datetime
 
-from scrapy import cmdline
-from scrapy.crawler import CrawlerProcess
 from ipproxytool.spiders.validator.douban import DoubanSpider
 from ipproxytool.spiders.validator.assetstore import AssetStoreSpider
 from ipproxytool.spiders.validator.gather import GatherSpider
@@ -22,6 +19,50 @@ from ipproxytool.spiders.validator.liepin import LiepinSpider
 from ipproxytool.spiders.validator.jd import JDSpider
 
 scrapydo.setup()
+
+
+def validator():
+    validators = [
+        HttpBinSpider,  # 必须
+        # LagouSpider,
+        # BossSpider,
+        # LiepinSpider,
+        JDSpider,
+        # DoubanSpider,
+    ]
+
+    process_list = []
+    for validator in validators:
+        popen = subprocess.Popen(['python', 'run_spider.py', validator.name], shell = False)
+        data = {
+            'name': validator.name,
+            'popen': popen,
+        }
+        process_list.append(data)
+
+    while True:
+        time.sleep(60)
+        for process in process_list:
+            popen = process.get('popen', None)
+            utils.log('name:%s poll:%s' % (process.get('name'), popen.poll()))
+
+            #  检测结束进程，如果有结束进程，重新开启
+            if popen != None and popen.poll() == 0:
+                name = process.get('name')
+                utils.log('%(name)s spider finish...\n' % {'name': name})
+
+                process_list.remove(process)
+
+                p = subprocess.Popen(['python', 'run_spider.py', name], shell = False)
+                data = {
+                    'name': name,
+                    'popen': p,
+                }
+                process_list.append(data)
+
+                time.sleep(1)
+                break
+
 
 if __name__ == '__main__':
     os.chdir(sys.path[0])
@@ -38,44 +79,4 @@ if __name__ == '__main__':
             level = logging.DEBUG
     )
 
-    validators = [
-        HttpBinSpider,  # 必须
-        # LagouSpider,
-        # BossSpider,
-        # LiepinSpider,
-        JDSpider,
-    ]
-
-    process_list = []
-    for validator in validators:
-        popen = subprocess.Popen(['python', 'runscrapy.py', validator.name], shell = False)
-        data = {
-            'name': validator.name,
-            'popen': popen,
-        }
-        process_list.append(data)
-
-    utils.log(process_list)
-
-    while True:
-        time.sleep(60)
-        for process in process_list:
-            popen = process.get('popen', None)
-            utils.log('name:%s poll:%s' % (process.get('name'), popen.poll()))
-
-            #  检测结束进程，如果有结束进程，重新开启
-            if popen != None and popen.poll() == 0:
-                name = process.get('name')
-                utils.log('%(name)s spider finish...\n' % {'name': name})
-
-                process_list.remove(process)
-
-                p = subprocess.Popen(['python', 'runscrapy.py', name], shell = False)
-                data = {
-                    'name': name,
-                    'popen': p,
-                }
-                process_list.append(data)
-
-                time.sleep(1)
-                break
+    validator()

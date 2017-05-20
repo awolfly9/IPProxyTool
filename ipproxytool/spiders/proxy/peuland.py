@@ -50,9 +50,6 @@ class PeulandSpider(BaseSpider):
             )
 
     def parse_page(self, response):
-
-        utils.log('cookiejar:%s' % response.meta.get('cookiejar'))
-
         headers = {
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate, br',

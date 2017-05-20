@@ -4,7 +4,6 @@ import random
 import time
 import re
 import config
-import utils
 
 from scrapy import Request
 from validator import Validator
@@ -43,21 +42,22 @@ class JDSpider(Validator):
         }
 
         self.success_mark = 'comments'
-        # self.is_record_web_page = True
+        self.is_record_web_page = False
+
         self.init()
 
     def start_requests(self):
-        count = utils.get_table_length(self.sql, self.name)
-        count_free = utils.get_table_length(self.sql, config.httpbin_table)
+        count = self.sql.get_proxy_count(self.name)
+        count_httpbin = self.sql.get_proxy_count(config.httpbin_table)
 
-        ids = utils.get_table_ids(self.sql, self.name)
-        ids_free = utils.get_table_ids(self.sql, config.httpbin_table)
+        ids = self.sql.get_proxy_ids(self.name)
+        ids_httpbin = self.sql.get_proxy_ids(config.httpbin_table)
 
-        for i in range(0, count + count_free):
+        for i in range(0, count + count_httpbin):
             table = self.name if (i < count) else config.httpbin_table
-            id = ids[i] if i < count else ids_free[i - len(ids)]
+            id = ids[i] if i < count else ids_httpbin[i - len(ids)]
 
-            proxy = utils.get_proxy_info(self.sql, table, id)
+            proxy = self.sql.get_proxy_with_id(table, id)
             if proxy == None:
                 continue
 
@@ -66,7 +66,6 @@ class JDSpider(Validator):
             product_id = re.search(pattern, url).group()
 
             cur_time = time.time()
-            self.log('start_request cur_time:%s' % cur_time)
             yield Request(
                     url = url,
                     headers = self.headers,
@@ -75,9 +74,7 @@ class JDSpider(Validator):
                         'download_timeout': self.timeout,
                         'proxy_info': proxy,
                         'table': table,
-                        'id': proxy.get('id'),
-                        'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
-                        'vali_count': proxy.get('vali_count', 0),
+                        'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
                         'product_id': product_id,
                     },
                     dont_filter = True,
@@ -118,8 +115,6 @@ class JDSpider(Validator):
                     'download_timeout': self.timeout,
                     'proxy_info': response.meta.get('proxy_info'),
                     'table': response.meta.get('table'),
-                    'id': response.meta.get('id'),
-                    'vali_count': response.meta.get('vali_count', 0),
                 },
                 dont_filter = True,
                 callback = self.success_parse,

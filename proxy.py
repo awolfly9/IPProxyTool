@@ -3,7 +3,7 @@
 
 class Proxy(object):
     def __init__(self):
-        self.id = 10000
+        self.id = 1
         self.ip = ''
         self.port = ''
         self.country = ''

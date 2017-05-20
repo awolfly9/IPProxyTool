@@ -25,6 +25,6 @@ class SteamSpider(Validator):
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:51.0) Gecko/20100101 Firefox/51.0',
         }
 
-        self.is_record_web_page = True
+        self.is_record_web_page = False
 
         self.init()

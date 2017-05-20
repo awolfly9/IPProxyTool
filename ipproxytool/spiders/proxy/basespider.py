@@ -5,9 +5,9 @@ import config
 import utils
 import datetime
 
-from sqlhelper import SqlHelper
 from scrapy.spiders import Spider
 from scrapy.http import Request
+from sql import SqlManager
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -22,22 +22,18 @@ class BaseSpider(Spider):
         self.urls = []
         self.headers = {}
         self.timeout = 10
-
-        self.sql = SqlHelper()
-
-        self.dir_log = 'log/proxy/%s' % self.name
-
         self.is_record_web_page = False
+
+        self.sql = SqlManager()
 
     def init(self):
         self.meta = {
             'download_timeout': self.timeout,
         }
 
+        self.dir_log = 'log/proxy/%s' % self.name
         utils.make_dir(self.dir_log)
-
-        command = utils.get_create_table_command(config.free_ipproxy_table)
-        self.sql.execute(command)
+        self.sql.init_proxy_table(config.free_ipproxy_table)
 
     def start_requests(self):
         for i, url in enumerate(self.urls):
@@ -59,7 +55,7 @@ class BaseSpider(Spider):
         pass
 
     def add_proxy(self, proxy):
-        utils.sql_insert_proxy(self.sql, config.free_ipproxy_table, proxy)
+        self.sql.insert_proxy(config.free_ipproxy_table, proxy)
 
     def write(self, data):
         if self.is_record_web_page:

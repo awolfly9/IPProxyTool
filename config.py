@@ -1,12 +1,25 @@
 # coding=utf-8
 
-# local
-database_config = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'root',
-    'password': 'root',
-    'charset': 'utf8',
+db_type = 'mysql'
+# database_type = 'redis'
+# database_type = 'sqlite'
+
+DB_config = {
+    'db_type': 'mysql',
+
+    'mysql': {
+        'host': 'localhost',
+        'port': 3306,
+        'user': 'root',
+        'password': '123456',
+        'charset': 'utf8',
+    },
+    'redis': {
+        'host': 'localhost',
+        'port': 6379,
+        'password': '123456',
+        'db': 1,
+    },
 }
 
 database = 'ipproxy'

@@ -3,7 +3,6 @@
 import json
 import time
 import config
-import utils
 
 from scrapy.http import Request
 from validator import Validator
@@ -46,7 +45,7 @@ class AssetStoreSpider(Validator):
 
     def get_unity_version(self, response):
         content = json.loads(response.body)
-        utils.log('unity content:%s' % response.body)
+        self.log('unity content:%s' % response.body)
 
         unity_version = content.get('kharma_version', '')
 
@@ -63,17 +62,17 @@ class AssetStoreSpider(Validator):
             'X-Unity-Session': '26c4202eb475d02864b40827dfff11a14657aa41',
         }
 
-        count = utils.get_table_length(self.sql, self.name)
-        count_free = utils.get_table_length(self.sql, config.httpbin_table)
+        count = self.sql.get_proxy_count(self.name)
+        count_free = self.sql.get_proxy_count(config.httpbin_table)
 
-        ids = utils.get_table_ids(self.sql, self.name)
-        ids_free = utils.get_table_ids(self.sql, config.httpbin_table)
+        ids = self.sql.get_proxy_ids(self.name)
+        ids_free = self.sql.get_proxy_ids(config.httpbin_table)
 
         for i in range(0, count + count_free):
             table = self.name if (i < count) else config.httpbin_table
             id = ids[i] if i < count else ids_free[i - len(ids)]
 
-            proxy = utils.get_proxy_info(self.sql, table, id)
+            proxy = self.sql.get_proxy_with_id(table, id)
             if proxy == None:
                 continue
 
@@ -87,8 +86,7 @@ class AssetStoreSpider(Validator):
                         'download_timeout': self.timeout,
                         'proxy_info': proxy,
                         'table': table,
-                        'id': proxy.get('id'),
-                        'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
+                        'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
                     },
                     dont_filter = True,
                     callback = self.success_parse,

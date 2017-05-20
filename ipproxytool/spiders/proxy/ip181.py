@@ -1,7 +1,5 @@
 #-*- coding: utf-8 -*-
 
-import utils
-
 from scrapy import Selector
 from basespider import BaseSpider
 from proxy import Proxy

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-
+import random
 import time
 import datetime
 import utils
@@ -7,7 +7,7 @@ import config
 
 from scrapy import Request
 from scrapy.spiders import Spider
-from sqlhelper import SqlHelper
+from sql import SqlManager
 
 
 class Validator(Spider):
@@ -17,21 +17,20 @@ class Validator(Spider):
 
     def __init__(self, name = None, **kwargs):
         super(Validator, self).__init__(name, **kwargs)
-        self.sql = SqlHelper()
-
-        self.dir_log = 'log/validator/%s' % self.name
-        self.timeout = 10
 
         self.urls = []
         self.headers = None
         self.success_mark = ''
+        self.timeout = 10
         self.is_record_web_page = False
 
+        self.sql = SqlManager()
+
     def init(self):
+        self.dir_log = 'log/validator/%s' % self.name
         utils.make_dir(self.dir_log)
 
-        command = utils.get_create_table_command(self.name)
-        self.sql.create_table(command)
+        self.sql.init_proxy_table(self.name)
 
     @classmethod
     def update_settings(cls, settings):
@@ -42,83 +41,70 @@ class Validator(Spider):
                          priority = 'spider')
 
     def start_requests(self):
-        count = utils.get_table_length(self.sql, self.name)
-        count_free = utils.get_table_length(self.sql, config.httpbin_table)
+        count = self.sql.get_proxy_count(self.name)
+        count_free = self.sql.get_proxy_count(config.httpbin_table)
 
-        ids = utils.get_table_ids(self.sql, self.name)
-        ids_free = utils.get_table_ids(self.sql, config.httpbin_table)
+        ids = self.sql.get_proxy_ids(self.name)
+        ids_httpbin = self.sql.get_proxy_ids(config.httpbin_table)
 
         for i in range(0, count + count_free):
             table = self.name if (i < count) else config.httpbin_table
-            id = ids[i] if i < count else ids_free[i - len(ids)]
+            id = ids[i] if i < count else ids_httpbin[i - len(ids)]
 
-            proxy = utils.get_proxy_info(self.sql, table, id)
+            proxy = self.sql.get_proxy_with_id(table, id)
             if proxy == None:
                 continue
 
-            for url in self.urls:
-                cur_time = time.time()
-                yield Request(
-                        url = url,
-                        headers = self.headers,
-                        meta = {
-                            'cur_time': cur_time,
-                            'download_timeout': self.timeout,
-                            'proxy_info': proxy,
-                            'table': table,
-                            'id': proxy.get('id'),
-                            'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
-                            'vali_count': proxy.get('vali_count', 0)
-                        },
-                        dont_filter = True,
-                        callback = self.success_parse,
-                        errback = self.error_parse,
-                )
+            url = random.choice(self.urls)
+            cur_time = time.time()
+            yield Request(
+                    url = url,
+                    headers = self.headers,
+                    meta = {
+                        'cur_time': cur_time,
+                        'download_timeout': self.timeout,
+                        'proxy_info': proxy,
+                        'table': table,
+                        'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
+                    },
+                    dont_filter = True,
+                    callback = self.success_parse,
+                    errback = self.error_parse,
+            )
 
     def success_parse(self, response):
-        utils.log('success_parse speed:%s meta:%s' % (time.time() - response.meta.get('cur_time'), response.meta))
-
         proxy = response.meta.get('proxy_info')
         table = response.meta.get('table')
-        id = response.meta.get('id')
-        ip = proxy.get('ip')
 
-        self.save_page(ip, response.body)
+        self.save_page(proxy.ip, response.body)
+        self.log('success_parse speed:%s meta:%s' % (time.time() - response.meta.get('cur_time'), response.meta))
 
+        proxy.vali_count += 1
+        proxy.speed = time.time() - response.meta.get('cur_time')
         if self.success_mark in response.body or self.success_mark is '':
-            speed = time.time() - response.meta.get('cur_time')
             if table == self.name:
-                if speed > self.timeout:
-                    command = utils.get_delete_data_command(table, id)
-                    self.sql.execute(command)
+                if proxy.speed > self.timeout:
+                    self.sql.del_proxy_with_id(table, proxy.id)
                 else:
-                    vali_count = response.meta.get('vali_count', 0) + 1
-                    command = utils.get_update_data_command(table, id, speed, vali_count)
-                    self.sql.execute(command)
+                    self.sql.update_proxy(table, proxy)
             else:
-                if speed < self.timeout:
-                    command = utils.get_insert_data_command(self.name)
-                    msg = (None, proxy.get('ip'), proxy.get('port'), proxy.get('country'), proxy.get('anonymity'),
-                           proxy.get('https'), speed, proxy.get('source'), None, 1)
-
-                    self.sql.insert_data(command, msg, commit = True)
+                if proxy.speed < self.timeout:
+                    self.sql.insert_proxy(table_name = self.name, proxy = proxy)
         else:
-            # 如果没有找到成功标示，说明这里返回信息有误，需要删除当前库的 ip
             if table == self.name:
-                command = utils.get_delete_data_command(table, id)
-                self.sql.execute(command)
+                self.sql.del_proxy_with_id(table_name = table, id = proxy.id)
+
+        self.sql.commit()
 
     def error_parse(self, failure):
         request = failure.request
-        utils.log('error_parse value:%s url:%s meta:%s' % (failure.value, request.url, request.meta))
+        self.log('error_parse value:%s url:%s meta:%s' % (failure.value, request.url, request.meta))
 
         proxy = failure.request.meta.get('proxy_info')
         table = failure.request.meta.get('table')
-        id = failure.request.meta.get('id')
 
         if table == self.name:
-            command = utils.get_delete_data_command(table, id)
-            self.sql.execute(command)
+            self.sql.del_proxy_with_id(table_name = table, id = proxy.id)
         else:
             # TODO... 如果 ip 验证失败应该针对特定的错误类型，进行处理
             pass
@@ -151,7 +137,6 @@ class Validator(Spider):
 
     def save_page(self, ip, data):
         filename = '{time} {ip}'.format(time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'), ip = ip)
-        utils.log('filename:%s' % filename)
 
         if self.is_record_web_page:
             with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:

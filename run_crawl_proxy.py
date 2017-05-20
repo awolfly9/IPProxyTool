@@ -8,7 +8,7 @@ import time
 import utils
 import config
 
-from sqlhelper import SqlHelper
+from sql import SqlManager
 from ipproxytool.spiders.proxy.xicidaili import XiCiDaiLiSpider
 from ipproxytool.spiders.proxy.sixsixip import SixSixIpSpider
 from ipproxytool.spiders.proxy.ip181 import IpOneEightOneSpider
@@ -34,12 +34,12 @@ if __name__ == '__main__':
         os.makedirs('log')
 
     logging.basicConfig(
-            filename = 'log/spider.log',
+            filename = 'log/crawl_proxy.log',
             format = '%(levelname)s %(asctime)s: %(message)s',
             level = logging.DEBUG
     )
 
-    sql = SqlHelper()
+    sql = SqlManager()
 
     spiders = [
         XiCiDaiLiSpider,
@@ -59,12 +59,10 @@ if __name__ == '__main__':
     while True:
         utils.log('*******************run spider start...*******************')
 
-        command = "DELETE FROM {table} where save_time < SUBDATE(NOW(), INTERVAL 0.5 DAY)".format(
-                table = config.free_ipproxy_table)
-        sql.execute(command)
+        sql.delete_old(config.free_ipproxy_table, 0.5)
 
         for spider in spiders:
-            scrapydo.run_spider(spider)
+            scrapydo.run_spider(spider_cls = spider)
 
         utils.log('*******************run spider waiting...*******************')
         time.sleep(1200)
