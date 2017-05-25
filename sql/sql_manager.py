@@ -4,7 +4,6 @@ import config
 
 from sql import Sql
 
-
 class SqlManager(object):
     def __init__(self):
         db_type = config.DB_config.get('db_type', 'mysql')
@@ -17,6 +16,9 @@ class SqlManager(object):
             pass
         elif db_type == 'sqlite':
             pass
+        elif db_type == 'mongodb':
+            from mongodb import Mongodb
+            self.sql = Mongodb(**db_config)
         else:  # default mysql
             from mysql import MySql
             self.sql = MySql(**config.DB_config.get('db_type'))

@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import json
 import logging
@@ -37,13 +37,13 @@ class insert(object):
 
             proxy = Proxy()
             proxy.set_value(
-                    ip = inputs.get('ip'),
-                    port = inputs.get('port'),
-                    country = inputs.get('country', None),
-                    anonymity = inputs.get('anonymity', None),
-                    https = inputs.get('https', 'no'),
-                    speed = inputs.get('speed', -1),
-                    source = inputs.get('source', name),
+                ip=inputs.get('ip'),
+                port=inputs.get('port'),
+                country=inputs.get('country', None),
+                anonymity=inputs.get('anonymity', None),
+                https=inputs.get('https', 'no'),
+                speed=inputs.get('speed', -1),
+                source=inputs.get('source', name),
             )
 
             sql.insert_proxy(name, proxy)
@@ -59,8 +59,8 @@ class select(object):
             sql = SqlManager()
             inputs = web.input()
             name = inputs.get('name')
-            anonymity = inputs.get('anonymity', '%')
-            https = inputs.get('https', '%')
+            anonymity = inputs.get('anonymity', '')
+            https = inputs.get('https', '')
             order = inputs.get('order', 'speed')
             sort = inputs.get('sort', 'asc')
             count = inputs.get('count', 100)
@@ -74,11 +74,12 @@ class select(object):
             }
             result = sql.select_proxy(name, **kwargs)
             data = [{
-                'id': item[0], 'ip': item[1], 'port': item[2], 'anonymity': item[4], 'https': item[5],
-                'speed': item[6], 'save_time': str(item[8])
+                'ip': item.get('ip'), 'port': item.get('port'),
+                'anonymity': item.get('anonymity'), 'https': item.get('https'),
+                'speed': item.get('speed'), 'save_time': item.get('save_time', '')
             } for item in result]
 
-            data = json.dumps(data, indent = 4)
+            data = json.dumps(data, indent=4)
             return data
         except Exception, e:
             logging.exception('select exception msg:%s' % e)

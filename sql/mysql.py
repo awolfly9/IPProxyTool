@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import logging
 import utils
@@ -73,15 +73,24 @@ class MySql(Sql):
             logging.exception('mysql insert_proxy exception msg:%s' % e)
 
     def select_proxy(self, table_name, **kwargs):
+        filter = {}
+        for k, v in kwargs.items():
+            if v != '':
+                filter[k] = v
+
         try:
             command = "SELECT * FROM {name} WHERE anonymity LIKE '{anonymity}' AND https LIKE '{https}' ORDER BY " \
                       "{order} {sort} limit {count}". \
-                format(name = table_name, anonymity = kwargs.get('anonymity', '%'),
-                       https = kwargs.get('https', '%'), order = kwargs.get('order', 'save_time'),
-                       sort = kwargs.get('sort', 'desc'), count = kwargs.get('count', 100))
+                format(name=table_name, anonymity=filter.get('anonymity', '%'),
+                       https=filter.get('https', '%'), order=filter.get('order', 'save_time'),
+                       sort=filter.get('sort', 'desc'), count=filter.get('count', 100))
 
             result = self.query(command)
-            return result
+            data = [{
+                'ip': item[1], 'port': item[2], 'anonymity': item[4], 'https': item[5],
+                'speed': item[6], 'save_time': str(item[8])
+            } for item in result]
+            return data
         except Exception, e:
             logging.exception('mysql select_proxy exception msg:%s' % e)
         return []
@@ -91,21 +100,21 @@ class MySql(Sql):
             command = "UPDATE {table_name} set https='{https}', speed={speed}, " \
                       "vali_count={vali_count}, anonymity = {anonymity},save_time={save_time} " \
                       "where id={id};".format(
-                    table_name = table_name, https = proxy.https,
-                    speed = proxy.speed, id = proxy.id, vali_count = proxy.vali_count, anonymity = proxy.anonymity,
-                    save_time = 'NOW()')
+                table_name=table_name, https=proxy.https,
+                speed=proxy.speed, id=proxy.id, vali_count=proxy.vali_count, anonymity=proxy.anonymity,
+                save_time='NOW()')
             logging.debug('mysql update_proxy command:%s' % command)
             self.cursor.execute(command)
         except Exception, e:
             logging.exception('mysql update_proxy exception msg:%s' % e)
 
     def delete_proxy(self, table_name, proxy):
-        self.del_proxy_with_id(table_name = table_name, id = proxy.id)
+        self.del_proxy_with_id(table_name=table_name, id=proxy.id)
 
     def delete_old(self, table_name, day):
         try:
             command = "DELETE FROM {table} where save_time < SUBDATE(NOW(), INTERVAL {day} DAY)".format(
-                    table = config.free_ipproxy_table, day = day)
+                table=config.free_ipproxy_table, day=day)
 
             self.cursor.execute(command)
             self.commit()
@@ -154,14 +163,14 @@ class MySql(Sql):
                 # }
                 proxy = Proxy()
                 proxy.set_value(
-                        ip = result[1],
-                        port = result[2],
-                        country = result[3],
-                        anonymity = result[4],
-                        https = result[5],
-                        speed = result[6],
-                        source = result[7],
-                        vali_count = result[9])
+                    ip=result[1],
+                    port=result[2],
+                    country=result[3],
+                    anonymity=result[4],
+                    https=result[5],
+                    speed=result[6],
+                    source=result[7],
+                    vali_count=result[9])
                 proxy.id = result[0]
                 proxy.save_time = result[8]
         except Exception, e:
@@ -201,7 +210,7 @@ class MySql(Sql):
         except Exception, e:
             logging.exception('mysql create_table exception:%s' % e)
 
-    def insert_data(self, command, data, commit = False):
+    def insert_data(self, command, data, commit=False):
         try:
             logging.debug('mysql insert_data command:%s, data:%s' % (command, data))
             x = self.cursor.execute(command, data)
@@ -214,7 +223,7 @@ class MySql(Sql):
     def commit(self):
         self.conn.commit()
 
-    def execute(self, command, commit = True):
+    def execute(self, command, commit=True):
         try:
             logging.debug('mysql execute command:%s' % command)
             data = self.cursor.execute(command)
@@ -225,7 +234,7 @@ class MySql(Sql):
             logging.exception('mysql execute exception msg:%s' % e)
             return None
 
-    def query(self, command, commit = False):
+    def query(self, command, commit=False):
         try:
             logging.debug('mysql execute command:%s' % command)
 
@@ -238,7 +247,7 @@ class MySql(Sql):
             logging.exception('mysql execute exception msg:%s' % e)
             return None
 
-    def query_one(self, command, commit = False):
+    def query_one(self, command, commit=False):
         try:
             logging.debug('mysql execute command:%s' % command)
 

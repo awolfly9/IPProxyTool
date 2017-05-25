@@ -1,10 +1,7 @@
 # coding=utf-8
 
-db_type = 'mysql'
-# database_type = 'redis'
-# database_type = 'sqlite'
-
 DB_config = {
+    # 'db_type': 'mongodb',
     'db_type': 'mysql',
 
     'mysql': {
@@ -20,6 +17,12 @@ DB_config = {
         'password': '123456',
         'db': 1,
     },
+    'mongodb':{
+        'host': 'localhost',
+        'port': 27017,
+        'username': '',
+        'password': '',
+    }
 }
 
 database = 'ipproxy'

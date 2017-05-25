@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 
 class Proxy(object):
@@ -27,7 +27,35 @@ class Proxy(object):
 
         return str(data)
 
-    def set_value(self, ip, port, country, anonymity, source = 'unkonw', https = 'no', speed = -1, vali_count = 0):
+    def __dict__(self):
+        data = {
+            'ip': self.ip,
+            'port': self.port,
+            'country': self.country,
+            'anonymity': self.anonymity,
+            'https': self.https,
+            'speed': self.speed,
+            'source': self.source,
+            'vali_count': self.vali_count,
+        }
+
+        return data
+
+    def get_dict(self):
+        data = {
+            'ip': self.ip,
+            'port': self.port,
+            'country': self.country,
+            'anonymity': self.anonymity,
+            'https': self.https,
+            'speed': self.speed,
+            'source': self.source,
+            'vali_count': self.vali_count,
+        }
+
+        return data
+
+    def set_value(self, ip, port, country, anonymity, source='unkonw', https='no', speed=-1, vali_count=0):
         self.ip = ip
         self.port = port
         self.country = country
