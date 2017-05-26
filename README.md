@@ -15,6 +15,7 @@ python 2.7.12
 * web.py
 * scrapydo
 * lxml
+* pymongo
 * 安装 mysql 并启动
 
 安装命令：
