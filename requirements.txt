@@ -5,3 +5,4 @@ requests
 web.py 
 scrapydo 
 lxml
+pymongo
