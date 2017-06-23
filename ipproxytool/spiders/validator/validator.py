@@ -81,7 +81,7 @@ class Validator(Spider):
 
         proxy.vali_count += 1
         proxy.speed = time.time() - response.meta.get('cur_time')
-        if self.success_mark in response.body or self.success_mark is '':
+        if self.success_mark in response.text or self.success_mark is '':
             if table == self.name:
                 if proxy.speed > self.timeout:
                     self.sql.del_proxy_with_id(table, proxy.id)
@@ -139,7 +139,7 @@ class Validator(Spider):
         filename = '{time} {ip}'.format(time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'), ip = ip)
 
         if self.is_record_web_page:
-            with open('%s/%s.html' % (self.dir_log, filename), 'w') as f:
+            with open('%s/%s.html' % (self.dir_log, filename), 'wb') as f:
                 f.write(data)
                 f.close()
 

@@ -31,7 +31,7 @@ def kill_ports(ports):
         log('data:\n%s  \nerr:\n%s' % (data, err))
 
         pattern = re.compile(r'\b\d+\b', re.S)
-        pids = re.findall(pattern, data)
+        pids = re.findall(pattern, data.decode())
 
         log('pids:%s' % str(pids))
 
@@ -42,7 +42,7 @@ def kill_ports(ports):
                     popen = subprocess.Popen('kill -9 %s' % pid, shell = True, stdout = subprocess.PIPE)
                     (data, err) = popen.communicate()
                     log('data:\n%s  \nerr:\n%s' % (data, err))
-                except Exception, e:
+                except Exception as e:
                     log('kill_ports exception:%s' % e)
 
         log('kill %s finish' % port)

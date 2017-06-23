@@ -5,7 +5,7 @@ import time
 import config
 
 from scrapy.http import Request
-from validator import Validator
+from .validator import Validator
 
 
 class AssetStoreSpider(Validator):

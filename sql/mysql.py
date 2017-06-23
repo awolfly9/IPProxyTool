@@ -6,7 +6,7 @@ import config
 import pymysql
 
 from proxy import Proxy
-from sql import Sql
+from sql.sql import Sql
 
 
 class MySql(Sql):
@@ -28,7 +28,7 @@ class MySql(Sql):
             logging.debug('mysql create_database command:%s' % command)
             self.cursor.execute(command)
             self.conn.commit()
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql create_database exception:%s' % e)
 
     def init_database(self, database_name):
@@ -37,7 +37,7 @@ class MySql(Sql):
             logging.debug('mysql create_database command:%s' % command)
             self.cursor.execute(command)
             self.conn.commit()
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql create_database exception:%s' % e)
 
     def init_proxy_table(self, table_name):
@@ -69,8 +69,10 @@ class MySql(Sql):
                     proxy.https, proxy.speed, proxy.source, None, proxy.vali_count)
 
             self.cursor.execute(command, data)
-        except Exception, e:
+            return True
+        except Exception as e:
             logging.exception('mysql insert_proxy exception msg:%s' % e)
+            return False
 
     def select_proxy(self, table_name, **kwargs):
         filter = {}
@@ -91,7 +93,7 @@ class MySql(Sql):
                 'speed': item[6], 'save_time': str(item[8])
             } for item in result]
             return data
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql select_proxy exception msg:%s' % e)
         return []
 
@@ -105,7 +107,7 @@ class MySql(Sql):
                 save_time='NOW()')
             logging.debug('mysql update_proxy command:%s' % command)
             self.cursor.execute(command)
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql update_proxy exception msg:%s' % e)
 
     def delete_proxy(self, table_name, proxy):
@@ -118,7 +120,7 @@ class MySql(Sql):
 
             self.cursor.execute(command)
             self.commit()
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql delete_old exception msg:%s' % e)
 
     def get_proxy_count(self, table_name):
@@ -127,7 +129,7 @@ class MySql(Sql):
             count, = self.query_one(command)
             logging.debug('mysql get_proxy_count count:%s' % count)
             return count
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql get_proxy_count exception msg:%s' % e)
 
         return 0
@@ -138,7 +140,7 @@ class MySql(Sql):
             command = "SELECT id from {}".format(table_name)
             result = self.query(command)
             ids = [item[0] for item in result]
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql get_proxy_ids exception msg:%s' % e)
 
         return ids
@@ -173,7 +175,7 @@ class MySql(Sql):
                     vali_count=result[9])
                 proxy.id = result[0]
                 proxy.save_time = result[8]
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql get_proxy_ids exception msg:%s' % e)
 
         return proxy
@@ -184,7 +186,7 @@ class MySql(Sql):
             command = "DELETE FROM {0} WHERE id={1}".format(table_name, id)
             self.cursor.execute(command)
             res = True
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql get_proxy_ids exception msg:%s' % e)
 
         return res
@@ -196,7 +198,7 @@ class MySql(Sql):
             self.cursor.execute(command)
             self.commit()
             res = True
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql del_proxy_with_ip exception msg:%s' % e)
 
         return res
@@ -207,7 +209,7 @@ class MySql(Sql):
             x = self.cursor.execute(command)
             self.conn.commit()
             return x
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql create_table exception:%s' % e)
 
     def insert_data(self, command, data, commit=False):
@@ -217,7 +219,7 @@ class MySql(Sql):
             if commit:
                 self.conn.commit()
             return x
-        except Exception, e:
+        except Exception as e:
             logging.debug('mysql insert_data exception msg:%s' % e)
 
     def commit(self):
@@ -230,7 +232,7 @@ class MySql(Sql):
             if commit:
                 self.conn.commit()
             return data
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql execute exception msg:%s' % e)
             return None
 
@@ -243,7 +245,7 @@ class MySql(Sql):
             if commit:
                 self.conn.commit()
             return data
-        except Exception, e:
+        except Exception as e:
             logging.exception('mysql execute exception msg:%s' % e)
             return None
 
@@ -257,6 +259,6 @@ class MySql(Sql):
                 self.conn.commit()
 
             return data
-        except Exception, e:
+        except Exception as e:
             logging.debug('mysql execute exception msg:%s' % str(e))
             return None

@@ -7,7 +7,7 @@ import json
 import datetime
 
 from proxy import Proxy
-from sql import Sql
+from sql.sql import Sql
 
 
 class Mongodb(Sql):

@@ -7,8 +7,6 @@ import subprocess
 import run_validator
 
 if __name__ == '__main__':
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
 
     # 进入当前项目目录
     os.chdir(sys.path[0])
@@ -26,3 +24,5 @@ if __name__ == '__main__':
     subprocess.Popen(['python', 'run_server.py'])
 
     run_validator.validator()
+
+

@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from proxy import Proxy
-from basespider import BaseSpider
+from .basespider import BaseSpider
 from scrapy.selector import Selector
 
 

@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import json
 import time
@@ -6,14 +6,14 @@ import requests
 import config
 
 from scrapy import Request
-from validator import Validator
+from .validator import Validator
 
 
 class HttpBinSpider(Validator):
     name = 'httpbin'
     concurrent_requests = 16
 
-    def __init__(self, name = None, **kwargs):
+    def __init__(self, name=None, **kwargs):
         super(HttpBinSpider, self).__init__(name, **kwargs)
         self.timeout = 20
         self.urls = [
@@ -36,7 +36,7 @@ class HttpBinSpider(Validator):
     def init(self):
         super(HttpBinSpider, self).init()
 
-        r = requests.get(url = self.urls[0], timeout = 20)
+        r = requests.get(url=self.urls[0], timeout=20)
         data = json.loads(r.text)
         self.origin_ip = data.get('origin', '')
         self.log('origin ip:%s' % self.origin_ip)
@@ -60,21 +60,21 @@ class HttpBinSpider(Validator):
                 https = 'yes' if 'https' in url else 'no'
 
                 yield Request(
-                        url = url,
-                        headers = self.headers,
-                        dont_filter = True,
-                        priority = 0 if https == 'yes' else 10,
-                        meta = {
-                            'cur_time': time.time(),
-                            'download_timeout': self.timeout,
-                            'proxy_info': proxy,
-                            'table': table,
-                            'https': https,
-                            'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
-                            'vali_count': proxy.vali_count,
-                        },
-                        callback = self.success_parse,
-                        errback = self.error_parse,
+                    url=url,
+                    headers=self.headers,
+                    dont_filter=True,
+                    priority=0 if https == 'yes' else 10,
+                    meta={
+                        'cur_time': time.time(),
+                        'download_timeout': self.timeout,
+                        'proxy_info': proxy,
+                        'table': table,
+                        'https': https,
+                        'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
+                        'vali_count': proxy.vali_count,
+                    },
+                    callback=self.success_parse,
+                    errback=self.error_parse,
                 )
 
     def success_parse(self, response):
@@ -84,7 +84,7 @@ class HttpBinSpider(Validator):
 
         self.save_page(proxy.ip, response.body)
 
-        if response.body.find(self.success_mark) or self.success_mark is '':
+        if self.success_mark in response.text or self.success_mark is '':
             proxy.speed = time.time() - response.meta.get('cur_time')
             proxy.vali_count += 1
             self.log('proxy_info:%s' % (str(proxy)))
@@ -106,14 +106,14 @@ class HttpBinSpider(Validator):
 
                 if table == self.name:
                     if proxy.speed > self.timeout:
-                        self.sql.del_proxy_with_id(table_name = table, id = proxy.id)
+                        self.sql.del_proxy_with_id(table_name=table, id=proxy.id)
                     else:
-                        self.sql.update_proxy(table_name = table, proxy = proxy)
+                        self.sql.update_proxy(table_name=table, proxy=proxy)
                 else:
                     if proxy.speed < self.timeout:
-                        self.sql.insert_proxy(table_name = self.name, proxy = proxy)
+                        self.sql.insert_proxy(table_name=self.name, proxy=proxy)
             else:
-                self.sql.update_proxy(table_name = table, proxy = proxy)
+                self.sql.update_proxy(table_name=table, proxy=proxy)
 
         self.sql.commit()
 
@@ -126,7 +126,7 @@ class HttpBinSpider(Validator):
             proxy = request.meta.get('proxy_info')
 
             if table == self.name:
-                self.sql.del_proxy_with_id(table_name = table, id = proxy.id)
+                self.sql.del_proxy_with_id(table_name=table, id=proxy.id)
             else:
                 # TODO... 如果 ip 验证失败应该针对特定的错误类型，进行处理
                 pass

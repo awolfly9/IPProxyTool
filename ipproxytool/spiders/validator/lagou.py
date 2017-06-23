@@ -4,7 +4,7 @@ import time
 import config
 import utils
 
-from validator import Validator
+from .validator import Validator
 from scrapy.http import FormRequest
 
 

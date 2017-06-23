@@ -6,7 +6,7 @@ import re
 import requests
 
 from proxy import Proxy
-from basespider import BaseSpider
+from .basespider import BaseSpider
 
 
 class GatherproxySpider(BaseSpider):

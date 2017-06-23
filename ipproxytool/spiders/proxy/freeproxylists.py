@@ -4,7 +4,7 @@ import urllib
 import re
 
 from proxy import Proxy
-from basespider import BaseSpider
+from .basespider import BaseSpider
 from bs4 import BeautifulSoup
 
 

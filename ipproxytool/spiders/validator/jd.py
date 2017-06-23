@@ -6,7 +6,7 @@ import re
 import config
 
 from scrapy import Request
-from validator import Validator
+from .validator import Validator
 
 
 class JDSpider(Validator):
@@ -87,7 +87,7 @@ class JDSpider(Validator):
         self.log('name:%s time:%s' % (name, time.time() - response.meta.get('cur_time')))
 
         pattern = re.compile('commentVersion:\'(\d+)\'', re.S)
-        comment_version = re.search(pattern, response.body).group(1)
+        comment_version = re.search(pattern, response.text).group(1)
 
         # sort type 5:推荐排序 6:时间排序
         url = 'https://club.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv' \

@@ -29,4 +29,4 @@ database = 'ipproxy'
 free_ipproxy_table = 'free_ipproxy'
 httpbin_table = 'httpbin'
 
-data_port = '8000'
+data_port = 8000

@@ -9,7 +9,7 @@ import utils
 from scrapy.http import Request
 from proxy import Proxy
 from utils import log
-from basespider import BaseSpider
+from .basespider import BaseSpider
 
 
 # 目标站点失效
@@ -96,7 +96,7 @@ class PeulandSpider(BaseSpider):
                     log('PeulandSpider parse_page req.text:%s' % req.url)
                     ret = True
                     break
-                except Exception, e:
+                except Exception as e:
                     log('PeulandSpider parse_page exception:%s' % str(e), logging.WARNING)
                     continue
 

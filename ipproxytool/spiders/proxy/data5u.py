@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 
 from scrapy import Selector
-from basespider import BaseSpider
+from .basespider import BaseSpider
 from proxy import Proxy
 
 class data5uSpider(BaseSpider):

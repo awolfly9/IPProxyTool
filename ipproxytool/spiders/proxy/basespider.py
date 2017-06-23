@@ -9,9 +9,6 @@ from scrapy.spiders import Spider
 from scrapy.http import Request
 from sql import SqlManager
 
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 class BaseSpider(Spider):
     name = 'basespider'
@@ -38,12 +35,12 @@ class BaseSpider(Spider):
     def start_requests(self):
         for i, url in enumerate(self.urls):
             yield Request(
-                    url = url,
-                    headers = self.headers,
-                    meta = self.meta,
-                    dont_filter = True,
-                    callback = self.parse_page,
-                    errback = self.error_parse,
+                url=url,
+                headers=self.headers,
+                meta=self.meta,
+                dont_filter=True,
+                callback=self.parse_page,
+                errback=self.error_parse,
             )
 
     def parse_page(self, response):
