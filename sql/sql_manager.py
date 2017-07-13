@@ -1,9 +1,8 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import config
 
-# from sql import Sql
-from sql.sql import Sql
+from sql.sql_base import SqlBase
 
 
 class SqlManager(object):

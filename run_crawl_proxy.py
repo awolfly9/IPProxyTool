@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import logging
 import os
@@ -31,9 +31,9 @@ if __name__ == '__main__':
         os.makedirs('log')
 
     logging.basicConfig(
-            filename = 'log/crawl_proxy.log',
-            format = '%(levelname)s %(asctime)s: %(message)s',
-            level = logging.DEBUG
+        filename = 'log/crawl_proxy.log',
+        format = '%(levelname)s %(asctime)s: %(message)s',
+        level = logging.DEBUG
     )
 
     sql = SqlManager()

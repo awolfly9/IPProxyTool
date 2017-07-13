@@ -7,10 +7,10 @@ import json
 import datetime
 
 from proxy import Proxy
-from sql.sql import Sql
+from sql.sql_base import SqlBase
 
 
-class Mongodb(Sql):
+class Mongodb(SqlBase):
     def __init__(self, **kwargs):
         super(Mongodb, self).__init__(**kwargs)
         self.client = pymongo.MongoClient(**kwargs)

@@ -6,10 +6,10 @@ import config
 import pymysql
 
 from proxy import Proxy
-from sql.sql import Sql
+from sql.sql_base import SqlBase
 
 
-class MySql(Sql):
+class MySql(SqlBase):
     def __init__(self, **kwargs):
         super(MySql, self).__init__(**kwargs)
 

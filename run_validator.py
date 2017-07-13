@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import logging
 import os
@@ -17,6 +17,7 @@ from ipproxytool.spiders.validator.boss import BossSpider
 from ipproxytool.spiders.validator.lagou import LagouSpider
 from ipproxytool.spiders.validator.liepin import LiepinSpider
 from ipproxytool.spiders.validator.jd import JDSpider
+from ipproxytool.spiders.validator.bbs import BBSSpider
 
 scrapydo.setup()
 
@@ -27,8 +28,9 @@ def validator():
         # LagouSpider,
         # BossSpider,
         # LiepinSpider,
-        JDSpider,
-        # DoubanSpider,
+        # JDSpider,
+        DoubanSpider,
+        # BBSSpider,
     ]
 
     process_list = []
@@ -71,9 +73,9 @@ if __name__ == '__main__':
         os.makedirs('log')
 
     logging.basicConfig(
-            filename = 'log/validator.log',
-            format = '%(asctime)s: %(message)s',
-            level = logging.DEBUG
+        filename = 'log/validator.log',
+        format = '%(asctime)s: %(message)s',
+        level = logging.DEBUG
     )
 
     validator()

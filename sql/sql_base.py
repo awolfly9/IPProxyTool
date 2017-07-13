@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 
-class Sql(object):
+class SqlBase(object):
     def __init__(self, **kwargs):
         pass
 
