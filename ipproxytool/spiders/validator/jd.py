@@ -41,10 +41,13 @@ class JDSpider(Validator):
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:52.0) Gecko/20100101 Firefox/52.0',
         }
 
-        self.success_mark = 'comments'
         self.is_record_web_page = False
-
         self.init()
+
+    def success_content_parse(self, response):
+        if 'comments' in response.text:
+            return True
+        return False
 
     def start_requests(self):
         count = self.sql.get_proxy_count(self.name)

@@ -31,8 +31,12 @@ class LagouSpider(Validator):
         }
 
         self.is_record_web_page = True
-        self.success_mark = 'success'
         self.init()
+
+    def success_content_parse(self, response):
+        if 'success' in response.text:
+            return True
+        return False
 
     def start_requests(self):
         count = self.sql.get_proxy_count(self.name)
