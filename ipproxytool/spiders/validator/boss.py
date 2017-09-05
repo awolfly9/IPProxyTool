@@ -25,6 +25,10 @@ class BossSpider(Validator):
                           'Firefox/50.0',
         }
 
-        self.success_mark = '<!DOCTYPE html>'
         self.is_record_web_page = False
         self.init()
+
+    def success_content_parse(self, response):
+        if '<!DOCTYPE html>' in response.text:
+            return True
+        return False
