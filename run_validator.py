@@ -18,6 +18,8 @@ from ipproxytool.spiders.validator.lagou import LagouSpider
 from ipproxytool.spiders.validator.liepin import LiepinSpider
 from ipproxytool.spiders.validator.jd import JDSpider
 from ipproxytool.spiders.validator.bbs import BBSSpider
+from ipproxytool.spiders.validator.zhilian import ZhiLianSpider 
+from ipproxytool.spiders.validator.amazoncn import AmazonCnSpider
 
 scrapydo.setup()
 
@@ -31,6 +33,8 @@ def validator():
         # JDSpider,
         DoubanSpider,
         # BBSSpider,
+        # ZhiLianSpider,
+        # AmazonCnSpider,
     ]
 
     process_list = []
