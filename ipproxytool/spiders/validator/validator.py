@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import random
 import time
 import datetime
@@ -21,6 +21,7 @@ class Validator(Spider):
         self.urls = []
         self.headers = None
         self.timeout = 10
+        self.success_status = [200]
         self.is_record_web_page = False
 
         self.sql = SqlManager()
@@ -57,18 +58,18 @@ class Validator(Spider):
             url = random.choice(self.urls)
             cur_time = time.time()
             yield Request(
-                    url = url,
-                    headers = self.headers,
-                    meta = {
-                        'cur_time': cur_time,
-                        'download_timeout': self.timeout,
-                        'proxy_info': proxy,
-                        'table': table,
-                        'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
-                    },
-                    dont_filter = True,
-                    callback = self.success_parse,
-                    errback = self.error_parse,
+                url = url,
+                headers = self.headers,
+                meta = {
+                    'cur_time': cur_time,
+                    'download_timeout': self.timeout,
+                    'proxy_info': proxy,
+                    'table': table,
+                    'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
+                },
+                dont_filter = True,
+                callback = self.success_parse,
+                errback = self.error_parse,
             )
 
     def success_parse(self, response):
@@ -96,6 +97,8 @@ class Validator(Spider):
         self.sql.commit()
 
     def success_content_parse(self, response):
+        if response.status not in self.success_status:
+            return False
         return True
 
     def error_parse(self, failure):
