@@ -84,7 +84,7 @@ class HttpBinSpider(Validator):
 
         self.save_page(proxy.ip, response.body)
 
-        if self.success_mark in response.text or self.success_mark is '':
+        if self.success_content_parse(response):
             proxy.speed = time.time() - response.meta.get('cur_time')
             proxy.vali_count += 1
             self.log('proxy_info:%s' % (str(proxy)))

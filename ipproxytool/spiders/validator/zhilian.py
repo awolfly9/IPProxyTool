@@ -24,6 +24,10 @@ class ZhiLianSpider(Validator):
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.110 Safari/537.36',
         }
 
-        self.success_mark = '<!DOCTYPE html>'
         self.is_record_web_page = False
         self.init()
+
+    def success_content_parse(self, response):
+        if '<!DOCTYPE html>' in response.text:
+            return True
+        return False

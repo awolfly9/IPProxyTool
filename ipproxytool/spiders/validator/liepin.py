@@ -27,6 +27,11 @@ class LiepinSpider(Validator):
                           'Firefox/50.0',
         }
 
-        self.success_mark = 'sojob-list'
         self.is_record_web_page = False
         self.init()
+
+    def success_content_parse(self, response):
+        if 'sojob-list' in response.text:
+            return True
+        return False
+

@@ -31,8 +31,12 @@ class LagouSpider(Validator):
         }
 
         self.is_record_web_page = True
-        self.success_mark = 'success'
         self.init()
+
+    def success_content_parse(self, response):
+        if 'success' in response.text:
+            return True
+        return False
 
     def start_requests(self):
         count = self.sql.get_proxy_count(self.name)
@@ -60,9 +64,9 @@ class LagouSpider(Validator):
                             'download_timeout': self.timeout,
                             'proxy_info': proxy,
                             'table': table,
-                            'id': proxy.get('id'),
-                            'proxy': 'http://%s:%s' % (proxy.get('ip'), proxy.get('port')),
-                            'vali_count': proxy.get('vali_count', 0),
+                            'id': proxy.id,
+                            'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
+                            'vali_count': proxy.vali_count,
                         },
                         cookies = {
                             'Hm_lpvt_4233e74dff0ae5bd0a3d81c6ccf756e6': '1488937030',

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 import random
 import time
 import datetime
@@ -20,8 +20,6 @@ class Validator(Spider):
 
         self.urls = []
         self.headers = None
-        self.success_mark = ''
-        self.success_status = [200]
         self.timeout = 10
         self.is_record_web_page = False
 
@@ -59,18 +57,18 @@ class Validator(Spider):
             url = random.choice(self.urls)
             cur_time = time.time()
             yield Request(
-                url = url,
-                headers = self.headers,
-                meta = {
-                    'cur_time': cur_time,
-                    'download_timeout': self.timeout,
-                    'proxy_info': proxy,
-                    'table': table,
-                    'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
-                },
-                dont_filter = True,
-                callback = self.success_parse,
-                errback = self.error_parse,
+                    url = url,
+                    headers = self.headers,
+                    meta = {
+                        'cur_time': cur_time,
+                        'download_timeout': self.timeout,
+                        'proxy_info': proxy,
+                        'table': table,
+                        'proxy': 'http://%s:%s' % (proxy.ip, proxy.port),
+                    },
+                    dont_filter = True,
+                    callback = self.success_parse,
+                    errback = self.error_parse,
             )
 
     def success_parse(self, response):
@@ -82,7 +80,7 @@ class Validator(Spider):
 
         proxy.vali_count += 1
         proxy.speed = time.time() - response.meta.get('cur_time')
-        if (self.success_mark in response.text or self.success_mark is '') and response.status in self.success_status:
+        if self.success_content_parse(response):
             if table == self.name:
                 if proxy.speed > self.timeout:
                     self.sql.del_proxy_with_id(table, proxy.id)
@@ -96,6 +94,9 @@ class Validator(Spider):
                 self.sql.del_proxy_with_id(table_name = table, id = proxy.id)
 
         self.sql.commit()
+
+    def success_content_parse(self, response):
+        return True
 
     def error_parse(self, failure):
         request = failure.request
