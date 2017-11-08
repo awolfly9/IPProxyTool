@@ -29,7 +29,7 @@ def validator():
         # BossSpider,
         # LiepinSpider,
         # JDSpider,
-        DoubanSpider,
+        # DoubanSpider,
         # BBSSpider,
     ]
 
