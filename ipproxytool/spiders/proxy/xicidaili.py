@@ -11,7 +11,7 @@ class XiCiDaiLiSpider(BaseSpider):
     def __init__(self, *a, **kw):
         super(XiCiDaiLiSpider, self).__init__(*a, **kw)
 
-        self.urls = ['http://www.xicidaili.com/nn/%s' % n for n in range(1, 2)]
+        self.urls = ['http://www.xicidaili.com/nn/%s' % n for n in range(1, 10)]
         self.headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Encoding': 'gzip, deflate',

@@ -12,7 +12,7 @@ class SixSixIpSpider(BaseSpider):
     def __init__(self, *a, **kwargs):
         super(SixSixIpSpider, self).__init__(*a, **kwargs)
 
-        self.urls = ['http://m.66ip.cn/%s.html' % n for n in range(1, 2)]
+        self.urls = ['http://m.66ip.cn/%s.html' % n for n in range(1, 10)]
         self.headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Encoding': 'gzip, deflate',
@@ -29,7 +29,7 @@ class SixSixIpSpider(BaseSpider):
     def parse_page(self, response):
         pattern = re.compile('<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>',
                              re.S)
-        items = re.findall(pattern, response.body)
+        items = re.findall(pattern, response.body.decode())
         for i, item in enumerate(items):
             if i >= 1:
                 proxy = Proxy()

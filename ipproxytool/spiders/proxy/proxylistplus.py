@@ -35,7 +35,9 @@ class ProxylistplusSpider(BaseSpider):
         sel = Selector(response)
         infos = sel.xpath('//tr[@class="cells"]').extract()
         for i, info in enumerate(infos):
+            self.log(info)
             val = Selector(text = info)
+
             ip = val.xpath('//td[2]/text()').extract_first()
             port = val.xpath('//td[3]/text()').extract_first()
             country = val.xpath('//td[5]/text()').extract_first()

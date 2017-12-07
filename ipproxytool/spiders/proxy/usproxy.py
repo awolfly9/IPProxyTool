@@ -37,7 +37,7 @@ class UsProxySpider(BaseSpider):
         pattern = re.compile(
 		'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td.+?>(.*?)</td><td>(.*?)</td><td.+?>(.*?)</td><td.+?>(.*?)</td><td.+?>(.*?)</td></tr>',
                 re.S)
-        items = re.findall(pattern, response.body)
+        items = re.findall(pattern, response.body.decode())
 
         if items is not None:
             for item in items:
