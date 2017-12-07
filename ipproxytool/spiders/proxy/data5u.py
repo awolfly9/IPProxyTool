@@ -12,7 +12,13 @@ class data5uSpider(BaseSpider):
         # 但有时，我们希望能同时实现父类的功能，这时，我们就需要调用父类的方法了，可通过使用 super 来实现，比如：
         super(data5uSpider, self).__init__(*a, **kw)
 
-        self.urls = ['http://www.data5u.com/free/']
+        self.urls = [
+            'http://www.data5u.com/free/index.shtml',
+            'http://www.data5u.com/free/gngn/index.shtml',
+            'http://www.data5u.com/free/gnpt/index.shtml',
+            'http://www.data5u.com/free/gwgn/index.shtml',
+            'http://www.data5u.com/free/gwpt/index.shtml',
+        ]
         self.headers = {
             # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             # 'Accept-Encoding': 'gzip, deflate, sdch',
