@@ -35,7 +35,7 @@ class GatherproxySpider(BaseSpider):
 
     def parse_page(self, response):
         pattern = re.compile('gp.insertPrx\((.*?)\)', re.S)
-        items = re.findall(pattern, response.body)
+        items = re.findall(pattern, response.body.decode())
         for item in items:
             data = json.loads(item)
             #端口用的是十六进制
