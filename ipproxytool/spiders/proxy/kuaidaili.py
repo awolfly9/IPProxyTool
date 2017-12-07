@@ -29,7 +29,7 @@ class KuaiDaiLiSpider(BaseSpider):
                 '<tr>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>('
                 '.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?<td.*?>(.*?)</td>\s.*?</tr>',
                 re.S)
-        items = re.findall(pattern, response.body)
+        items = re.findall(pattern, response.body.decode())
 
         for item in items:
             proxy = Proxy()
