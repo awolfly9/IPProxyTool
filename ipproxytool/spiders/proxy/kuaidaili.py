@@ -12,13 +12,13 @@ class KuaiDaiLiSpider(BaseSpider):
     def __init__(self, *a, **kwargs):
         super(KuaiDaiLiSpider, self).__init__(*a, **kwargs)
 
-        self.urls = ['http://www.kuaidaili.com/free/inha/%s/' % i for i in range(1, 5)]
+        self.urls = ['https://www.kuaidaili.com/free/inha/%s/' % i for i in range(1, 5)]
 
         self.headers = {
-            'Host': 'www.kuaidaili.com',
-            'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:52.0) Gecko/20100101 Firefox/52.0',
-            # 'Referer': 'http://www.kuaidaili.com/free/inha/1/',
+            'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Encoding':'gzip, deflate',
+            'Accept-Language':'zh-CN,zh;q=0.9',
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
         }
 
         self.is_record_web_page = False
