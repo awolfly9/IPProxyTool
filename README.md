@@ -40,9 +40,7 @@ database_config = {
 }
 ```
 
-## MYSQL数据库配置
-
-导入数据表结构
+MYSQL: 导入数据表结构
 ```
 $ mysql> create database ipproxy;
 Query OK, 1 row affected (0.00 sec)
