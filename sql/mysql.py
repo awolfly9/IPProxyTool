@@ -74,6 +74,14 @@ class MySql(SqlBase):
             logging.exception('mysql insert_proxy exception msg:%s' % e)
             return False
 
+    def insert_valid_proxy(self, id):
+        try:
+            command = "CALL ip_transfer({id})".format(id=id)
+            self.cursor.execute(command)
+        except Exception as e:
+            logging.exception('[Error]mysql#insert_valid_proxy Exception msg:{}'.format(str(e)))
+            raise e
+
     def select_proxy(self, table_name, **kwargs):
         filter = {}
         for k, v in kwargs.items():
@@ -109,6 +117,15 @@ class MySql(SqlBase):
             self.cursor.execute(command)
         except Exception as e:
             logging.exception('mysql update_proxy exception msg:%s' % e)
+
+    def update_valid_proxy(self,id=0):
+        try:
+            command = "UPDATE httpbin SET vali_count=vali_count+1 WHERE id={id}".format(id=id)
+            affected_row = self.cursor.execute(command)
+            self.commit()
+            return affected_row
+        except Exception as e:
+            logging.exception('[mysql] update_valid_proxy exception:{msg}'.format(str(e)))
 
     def delete_proxy(self, table_name, proxy):
         self.del_proxy_with_id(table_name=table_name, id=proxy.id)
@@ -179,6 +196,30 @@ class MySql(SqlBase):
             logging.exception('mysql get_proxy_ids exception msg:%s' % e)
 
         return proxy
+
+    def get_proxies_info(self,table_name,start_id=0,limit=100):
+        '''批量获取代理表中的id，ip和port信息
+        Args:
+            @table_name 表名
+            @start_id  起始id
+            @limit   单批次最大记录数
+
+        Return
+            包含id,ip,port信息的元组列表
+
+        '''
+        command = ('SELECT id,ip,port from {table} where id >={start_id}'
+                   ' order by id asc limit {limit}')
+        command = command.format(table=table_name, start_id=start_id, limit=limit)
+        proxies_info = []
+        try:
+            result = self.query(command)
+            proxies_info = [proxy for proxy in result]
+        except Exception as e:
+            logging.exception('[ERROR]#mysql get_proxies_info: {msg}'.format(msg=e))
+
+        return proxies_info
+
 
     def del_proxy_with_id(self, table_name, id):
         res = False
@@ -262,3 +303,4 @@ class MySql(SqlBase):
         except Exception as e:
             logging.debug('mysql execute exception msg:%s' % str(e))
             return None
+
