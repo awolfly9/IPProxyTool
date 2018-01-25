@@ -78,6 +78,49 @@ LOCK TABLES `httpbin` WRITE;
 /*!40000 ALTER TABLE `httpbin` DISABLE KEYS */;
 /*!40000 ALTER TABLE `httpbin` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'ipproxy'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `drop_iptables` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `drop_iptables`()
+BEGIN
+   DELETE FROM ipproxy.free_ipproxy;
+   DELETE FROM ipproxy.httpbin;
+   TRUNCATE TABLE ipproxy.free_ipproxy;
+   TRUNCATE TABLE ipproxy.httpbin;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ip_transfer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ip_transfer`(IN valid_id INT)
+BEGIN DECLARE cur_ip char(25); DECLARE cur_port int(4); SELECT ip,port INTO cur_ip,cur_port FROM free_ipproxy WHERE id = valid_id; DELETE FROM httpbin WHERE ip =cur_ip AND port = cur_port;  INSERT INTO httpbin(ip,port,country,anonymity,https,speed,source)  SELECT ip,port,country,anonymity,https,speed,source  FROM free_ipproxy WHERE id = valid_id; DELETE FROM free_ipproxy where id = valid_id; END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -88,4 +131,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-24 13:38:56
+-- Dump completed on 2018-01-25  4:01:20
