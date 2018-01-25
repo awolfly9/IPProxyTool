@@ -76,3 +76,16 @@ def delete():
     data = {'result': result}
 
     return json.dumps(data, indent=4)
+
+@app.route('/query')
+def query():
+    sql = SqlManager()
+    start_id = request.args.get('sid')
+    limit = int(request.args.get('limit','100'))
+    proxies = sql.get_proxies_info(config.httpbin_table,start_id=start_id,limit=limit)
+    data = [{'id':proxy[0],'ip':proxy[1],'port':proxy[2],'https':proxy[3]}
+            for proxy in proxies]
+    return json.dumps(data,indent=4)
+    
+
+    

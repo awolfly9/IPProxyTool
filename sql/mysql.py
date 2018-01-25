@@ -208,7 +208,7 @@ class MySql(SqlBase):
             包含id,ip,port信息的元组列表
 
         '''
-        command = ('SELECT id,ip,port from {table} where id >={start_id}'
+        command = ('SELECT id,ip,port,https from {table} where id >={start_id}'
                    ' order by id asc limit {limit}')
         command = command.format(table=table_name, start_id=start_id, limit=limit)
         proxies_info = []
