@@ -5,6 +5,7 @@ import os
 import sys
 import subprocess
 import run_validator
+import run_validator_async
 
 if __name__ == '__main__':
 
@@ -22,7 +23,11 @@ if __name__ == '__main__':
 
     subprocess.Popen(['python', 'run_crawl_proxy.py'])
     subprocess.Popen(['python', 'run_server.py'])
+    
+    if 'async' in sys.argv: 
+        run_validator_async.async_validator()
+    else:
+        run_validator.validator()
 
-    run_validator.validator()
 
 
