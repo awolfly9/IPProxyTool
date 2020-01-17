@@ -8,9 +8,9 @@ chardet==3.0.4
 click==6.7
 constantly==15.1.0
 crochet==1.7.0
-cryptography==1.9
+cryptography==2.3
 cssselect==1.0.1
-Flask==0.12.2
+Flask==1.0
 hyperlink==17.2.1
 idna==2.5
 incremental==17.5.0
@@ -28,13 +28,13 @@ pymongo==3.4.0
 PyMySQL==0.7.11
 pyOpenSSL==17.0.0
 queuelib==1.4.2
-requests==2.18.1
+requests==2.20.0
 Scrapy==1.4.0
 scrapydo==0.2.2
 service-identity==17.0.0
 six==1.10.0
 SQLAlchemy==1.1.11
-Twisted==17.5.0
+Twisted==19.7.0
 urllib3==1.24.2
 w3lib==1.17.0
 Werkzeug==0.15.3
