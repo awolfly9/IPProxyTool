@@ -28,7 +28,7 @@ pymongo==3.4.0
 PyMySQL==0.7.11
 pyOpenSSL==17.0.0
 queuelib==1.4.2
-requests==2.18.1
+requests==2.20.0
 Scrapy==1.4.0
 scrapydo==0.2.2
 service-identity==17.0.0
