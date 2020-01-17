@@ -8,7 +8,7 @@ chardet==3.0.4
 click==6.7
 constantly==15.1.0
 crochet==1.7.0
-cryptography==1.9
+cryptography==2.3
 cssselect==1.0.1
 Flask==0.12.2
 hyperlink==17.2.1
