@@ -6,15 +6,15 @@ DB_config = {
 
     'mysql': {
         'host': 'localhost',
-        'port': 3306,
+        'port': 3307,
         'user': 'root',
-        'password': '123456',
+        'password': 'usbw',
         'charset': 'utf8',
     },
     'redis': {
         'host': 'localhost',
         'port': 6379,
-        'password': '123456',
+        'password': '',
         'db': 1,
     },
     'mongodb':{

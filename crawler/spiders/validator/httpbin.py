@@ -88,7 +88,6 @@ class HttpBinSpider(Validator):
             proxy.speed = time.time() - response.meta.get('cur_time')
             proxy.vali_count += 1
             self.log('proxy_info:%s' % (str(proxy)))
-
             if proxy.https == 'no':
                 data = json.loads(response.body)
                 origin = data.get('origin')

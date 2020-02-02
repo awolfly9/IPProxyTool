@@ -9,16 +9,16 @@ import utils
 import config
 
 from sql import SqlManager
-from ipproxytool.spiders.proxy.xicidaili import XiCiDaiLiSpider
-from ipproxytool.spiders.proxy.sixsixip import SixSixIpSpider
-from ipproxytool.spiders.proxy.ip181 import IpOneEightOneSpider
-from ipproxytool.spiders.proxy.kuaidaili import KuaiDaiLiSpider
-from ipproxytool.spiders.proxy.gatherproxy import GatherproxySpider
-from ipproxytool.spiders.proxy.hidemy import HidemySpider
-from ipproxytool.spiders.proxy.proxylistplus import ProxylistplusSpider
-from ipproxytool.spiders.proxy.freeproxylists import FreeProxyListsSpider
-from ipproxytool.spiders.proxy.usproxy import UsProxySpider
-from ipproxytool.spiders.proxy.proxydb import ProxyDBSpider
+from crawler.spiders.proxy.xicidaili import XiCiDaiLiSpider
+from crawler.spiders.proxy.sixsixip import SixSixIpSpider
+from crawler.spiders.proxy.ip181 import IpOneEightOneSpider
+from crawler.spiders.proxy.kuaidaili import KuaiDaiLiSpider
+from crawler.spiders.proxy.gatherproxy import GatherproxySpider
+from crawler.spiders.proxy.hidemy import HidemySpider
+from crawler.spiders.proxy.proxylistplus import ProxylistplusSpider
+from crawler.spiders.proxy.freeproxylists import FreeProxyListsSpider
+from crawler.spiders.proxy.usproxy import UsProxySpider
+from crawler.spiders.proxy.proxydb import ProxyDBSpider
 
 
 scrapydo.setup()

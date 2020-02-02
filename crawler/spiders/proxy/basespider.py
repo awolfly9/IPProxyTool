@@ -29,6 +29,7 @@ class BaseSpider(Spider):
         }
 
         self.dir_log = 'log/proxy/%s' % self.name
+        print("_______________" + self.name)
         utils.make_dir(self.dir_log)
         self.sql.init_proxy_table(config.free_ipproxy_table)
 

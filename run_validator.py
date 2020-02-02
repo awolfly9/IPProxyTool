@@ -9,7 +9,7 @@ import scrapydo
 import utils
 from importlib import import_module
 
-VALIDATORS = {'HttpBinSpider' :'ipproxytool.spiders.validator.httpbin',
+VALIDATORS = {#'HttpBinSpider' :'crawler.spiders.validator.httpbin',
             # 'DoubanSpider':'ipproxytool.spiders.validator.douban',
             # 'AssetStoreSpider':'ipproxytool.spiders.validator.assetstore',
             # 'GatherSpider' :'ipproxytool.spiders.validator.gather',
@@ -22,6 +22,7 @@ VALIDATORS = {'HttpBinSpider' :'ipproxytool.spiders.validator.httpbin',
             # 'BBSSpider' :'ipproxytool.spiders.validator.bbs',
             # 'ZhiLianSpider' :'ipproxytool.spiders.validator.zhilian',
             # 'AmazonCnSpider' :'ipproxytool.spiders.validator.amazoncn',
+              'SchoolSpider':'crawler.spiders.validator.school',
               }
 
 scrapydo.setup()
@@ -32,13 +33,13 @@ def validator():
     for item, path in VALIDATORS.items():
         module = import_module(path)
         validator = getattr(module,item)
-        popen = subprocess.Popen(['python', 'run_spider.py', validator.name], shell=False)
+        popen = subprocess.Popen(['python', 'run_spider.py', validator.name], shell=False)#启动进程
         data = {
             'name': validator.name,
             'popen': popen,
         }
         process_list.append(data)
-
+    #进程守护
     while True:
         time.sleep(60)
         for process in process_list:
