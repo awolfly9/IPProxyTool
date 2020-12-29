@@ -9,29 +9,30 @@ import scrapydo
 import utils
 from importlib import import_module
 
-VALIDATORS = {'HttpBinSpider' :'ipproxytool.spiders.validator.httpbin',
-            # 'DoubanSpider':'ipproxytool.spiders.validator.douban',
-            # 'AssetStoreSpider':'ipproxytool.spiders.validator.assetstore',
-            # 'GatherSpider' :'ipproxytool.spiders.validator.gather',
-            # 'HttpBinSpider' :'ipproxytool.spiders.validator.httpbin',
-            # 'SteamSpider' :'ipproxytool.spiders.validator.steam',
-            # 'BossSpider' :'ipproxytool.spiders.validator.boss',
-            # 'LagouSpider' :'ipproxytool.spiders.validator.lagou',
-            # 'LiepinSpider' :'ipproxytool.spiders.validator.liepin',
-            # 'JDSpider' :'ipproxytool.spiders.validator.jd',
-            # 'BBSSpider' :'ipproxytool.spiders.validator.bbs',
-            # 'ZhiLianSpider' :'ipproxytool.spiders.validator.zhilian',
-            # 'AmazonCnSpider' :'ipproxytool.spiders.validator.amazoncn',
-              }
+VALIDATORS = {
+    'HttpBinSpider': 'crawler.spiders.validator.httpbin',
+    # 'DoubanSpider':'ipproxytool.spiders.validator.douban',
+    # 'AssetStoreSpider':'ipproxytool.spiders.validator.assetstore',
+    # 'GatherSpider' :'ipproxytool.spiders.validator.gather',
+    # 'HttpBinSpider' :'ipproxytool.spiders.validator.httpbin',
+    # 'SteamSpider' :'ipproxytool.spiders.validator.steam',
+    # 'BossSpider' :'ipproxytool.spiders.validator.boss',
+    # 'LagouSpider' :'ipproxytool.spiders.validator.lagou',
+    # 'LiepinSpider' :'ipproxytool.spiders.validator.liepin',
+    # 'JDSpider' :'ipproxytool.spiders.validator.jd',
+    # 'BBSSpider' :'ipproxytool.spiders.validator.bbs',
+    # 'ZhiLianSpider' :'ipproxytool.spiders.validator.zhilian',
+    # 'AmazonCnSpider' :'ipproxytool.spiders.validator.amazoncn',
+}
 
 scrapydo.setup()
 
+
 def validator():
-     
     process_list = []
     for item, path in VALIDATORS.items():
         module = import_module(path)
-        validator = getattr(module,item)
+        validator = getattr(module, item)
         popen = subprocess.Popen(['python', 'run_spider.py', validator.name], shell=False)
         data = {
             'name': validator.name,
@@ -50,7 +51,7 @@ def validator():
                 name = process.get('name')
                 utils.log('%(name)s spider finish...\n' % {'name': name})
                 process_list.remove(process)
-                p = subprocess.Popen(['python', 'run_spider.py', name], shell = False)
+                p = subprocess.Popen(['python', 'run_spider.py', name], shell=False)
                 data = {
                     'name': name,
                     'popen': p,
@@ -67,9 +68,9 @@ if __name__ == '__main__':
         os.makedirs('log')
 
     logging.basicConfig(
-        filename = 'log/validator.log',
-        format = '%(asctime)s: %(message)s',
-        level = logging.DEBUG
+        filename='log/validator.log',
+        format='%(asctime)s: %(message)s',
+        level=logging.DEBUG
     )
 
     validator()

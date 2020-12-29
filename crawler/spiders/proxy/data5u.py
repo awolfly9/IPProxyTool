@@ -1,23 +1,20 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from scrapy import Selector
 from .basespider import BaseSpider
 from proxy import Proxy
 
-class data5uSpider(BaseSpider):
+
+class Data5uSpider(BaseSpider):
     name = 'data5u'
 
     def __init__(self, *a, **kw):
         # 在类的继承中，如果重定义某个方法，该方法会覆盖父类的同名方法
         # 但有时，我们希望能同时实现父类的功能，这时，我们就需要调用父类的方法了，可通过使用 super 来实现，比如：
-        super(data5uSpider, self).__init__(*a, **kw)
+        super(Data5uSpider, self).__init__(*a, **kw)
 
         self.urls = [
-            'http://www.data5u.com/free/index.shtml',
-            'http://www.data5u.com/free/gngn/index.shtml',
-            'http://www.data5u.com/free/gnpt/index.shtml',
-            'http://www.data5u.com/free/gwgn/index.shtml',
-            'http://www.data5u.com/free/gwpt/index.shtml',
+            'http://www.data5u.com/'
         ]
         self.headers = {
             # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -37,7 +34,7 @@ class data5uSpider(BaseSpider):
         sel = Selector(response)
         infos = sel.xpath('//ul[@class="l2"]').extract()
         for i, info in enumerate(infos):
-            val = Selector(text = info)
+            val = Selector(text=info)
             ip = val.xpath('//ul[@class="l2"]/span[1]/li/text()').extract_first()
             port = val.xpath('//ul[@class="l2"]/span[2]/li/text()').extract_first()
             anonymity = val.xpath('//ul[@class="l2"]/span[3]/li/text()').extract_first()
@@ -46,11 +43,10 @@ class data5uSpider(BaseSpider):
 
             proxy = Proxy()
             proxy.set_value(
-                    ip = ip,
-                    port = port,
-                    country = country,
-                    anonymity = anonymity,
-                    source = self.name,
+                ip=ip,
+                port=port,
+                country=country,
+                anonymity=anonymity,
+                source=self.name,
             )
-
-            self.add_proxy(proxy = proxy)
+            self.add_proxy(proxy=proxy)

@@ -19,7 +19,7 @@ class BaseSpider(Spider):
         self.urls = []
         self.headers = {}
         self.timeout = 10
-        self.is_record_web_page = False
+        self.is_record_web_page = True
 
         self.sql = SqlManager()
 

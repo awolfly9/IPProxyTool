@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import logging
 import os
@@ -10,7 +10,7 @@ import datetime
 
 
 # 自定义的日志输出
-def log(msg, level = logging.DEBUG):
+def log(msg, level=logging.DEBUG):
     logging.log(level, msg)
     print('%s [%s], msg:%s' % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), level, msg))
 
@@ -26,7 +26,7 @@ def log(msg, level = logging.DEBUG):
 def kill_ports(ports):
     for port in ports:
         log('kill %s start' % port)
-        popen = subprocess.Popen('lsof -i:%s' % port, shell = True, stdout = subprocess.PIPE)
+        popen = subprocess.Popen('lsof -i:%s' % port, shell=True, stdout=subprocess.PIPE)
         (data, err) = popen.communicate()
         log('data:\n%s  \nerr:\n%s' % (data, err))
 
@@ -39,7 +39,7 @@ def kill_ports(ports):
             if pid != '' and pid != None:
                 try:
                     log('pid:%s' % pid)
-                    popen = subprocess.Popen('kill -9 %s' % pid, shell = True, stdout = subprocess.PIPE)
+                    popen = subprocess.Popen('kill -9 %s' % pid, shell=True, stdout=subprocess.PIPE)
                     (data, err) = popen.communicate()
                     log('data:\n%s  \nerr:\n%s' % (data, err))
                 except Exception as e:

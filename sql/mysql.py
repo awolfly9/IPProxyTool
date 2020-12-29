@@ -51,9 +51,11 @@ class MySql(SqlBase):
             "`https` CHAR(4) DEFAULT NULL ,"
             "`speed` FLOAT DEFAULT NULL,"
             "`source` CHAR(20) DEFAULT NULL,"
-            "`save_time` TIMESTAMP NOT NULL,"
             "`vali_count` INT(5) DEFAULT 0,"
-            "PRIMARY KEY(id)"
+            "`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,"
+            "`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
+            "PRIMARY KEY(id),"
+            "UNIQUE KEY `uniq_ip` (`ip`)"
             ") ENGINE=InnoDB".format(table_name))
 
         self.cursor.execute(command)
@@ -62,11 +64,11 @@ class MySql(SqlBase):
     def insert_proxy(self, table_name, proxy):
         try:
             command = ("INSERT IGNORE INTO {} "
-                       "(id, ip, port, country, anonymity, https, speed, source, save_time, vali_count)"
-                       "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name))
+                       "(id, ip, port, country, anonymity, https, speed, source, vali_count)"
+                       "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name))
 
             data = (None, proxy.ip, proxy.port, proxy.country, proxy.anonymity,
-                    proxy.https, proxy.speed, proxy.source, None, proxy.vali_count)
+            proxy.https, proxy.speed, proxy.source, proxy.vali_count)
 
             self.cursor.execute(command, data)
             return True
@@ -88,13 +90,14 @@ class MySql(SqlBase):
             if v != '':
                 filter[k] = v
 
+        table_name = table_name if table_name else 'free_ipproxy'
+
         try:
             command = "SELECT * FROM {name} WHERE anonymity LIKE '{anonymity}' AND https LIKE '{https}' ORDER BY " \
                       "{order} {sort} limit {count}". \
                 format(name=table_name, anonymity=filter.get('anonymity', '%'),
                        https=filter.get('https', '%'), order=filter.get('order', 'save_time'),
                        sort=filter.get('sort', 'desc'), count=filter.get('count', 100))
-
             result = self.query(command)
             data = [{
                 'ip': item[1], 'port': item[2], 'anonymity': item[4], 'https': item[5],
@@ -118,7 +121,7 @@ class MySql(SqlBase):
         except Exception as e:
             logging.exception('mysql update_proxy exception msg:%s' % e)
 
-    def update_valid_proxy(self,id=0):
+    def update_valid_proxy(self, id=0):
         try:
             command = "UPDATE httpbin SET vali_count=vali_count+1 WHERE id={id}".format(id=id)
             affected_row = self.cursor.execute(command)
@@ -197,7 +200,7 @@ class MySql(SqlBase):
 
         return proxy
 
-    def get_proxies_info(self,table_name,start_id=0,limit=100):
+    def get_proxies_info(self, table_name, start_id=0, limit=100):
         '''批量获取代理表中的id，ip和port信息
         Args:
             @table_name 表名
@@ -219,7 +222,6 @@ class MySql(SqlBase):
             logging.exception('[ERROR]#mysql get_proxies_info: {msg}'.format(msg=e))
 
         return proxies_info
-
 
     def del_proxy_with_id(self, table_name, id):
         res = False
@@ -303,4 +305,3 @@ class MySql(SqlBase):
         except Exception as e:
             logging.debug('mysql execute exception msg:%s' % str(e))
             return None
-

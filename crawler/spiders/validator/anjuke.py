@@ -9,7 +9,7 @@ import config
 
 from scrapy import Request
 from scrapy.selector import Selector
-from ipproxytool.spiders.validator.validator import Validator
+from crawler.spiders.validator.validator import Validator
 
 
 class AJKSpider(Validator):
