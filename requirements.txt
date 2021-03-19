@@ -19,7 +19,7 @@ incremental==17.5.0
 itemadapter==0.2.0
 itemloaders==1.0.4
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 jmespath==0.10.0
 logzero==1.6.3
 lxml==4.6.2
