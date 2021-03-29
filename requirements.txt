@@ -31,7 +31,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
 PyDispatcher==2.0.5
-Pygments==2.7.3
+Pygments==2.7.4
 PyHamcrest==2.0.2
 pymongo==3.11.2
 PyMySQL==0.10.1
