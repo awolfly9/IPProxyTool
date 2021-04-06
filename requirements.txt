@@ -45,7 +45,7 @@ six==1.15.0
 soupsieve==2.1
 Twisted==20.3.0
 typing-extensions==3.7.4.3
-urllib3==1.26.2
+urllib3==1.26.4
 w3lib==1.22.0
 Werkzeug==1.0.1
 wrapt==1.12.1
