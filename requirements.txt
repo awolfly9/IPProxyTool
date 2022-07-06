@@ -22,7 +22,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 jmespath==0.10.0
 logzero==1.6.3
-lxml==4.6.2
+lxml==4.9.1
 MarkupSafe==1.1.1
 multidict==5.1.0
 parsel==1.6.0
